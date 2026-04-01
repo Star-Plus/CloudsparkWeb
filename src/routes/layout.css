@@ -1,1 +1,51 @@
 @import 'tailwindcss';
+
+@theme {
+    --color-primary: #6952f7;
+    --color-secondary: #8838FF;
+
+    --color-background: #121212;
+    --color-txt-main: #FCFCFC;
+    --color-txt-muted: #A0A0A0;
+
+    --color-border: rgba(255, 255, 255, 0.08);
+
+    --color-success: #0BD900;
+    --color-error: #E9001F;
+
+    --font-primary: 'primary', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+input:focus {
+    outline: none;
+}
+
+*::-webkit-scrollbar {
+    width: 4px;
+    background-color: var(--color-background);
+}
+
+*::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background-color: var(--color-border);
+}
+
+body {
+    overflow-x: hidden;
+}
+
+@font-face {
+    font-family: 'primary';
+    src: url('/fonts/Hanken_Grotesk/HankenGrotesk-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+}
+
+*::selection {
+    background-color: var(--color-primary);
+    color: var(--color-txt-main);
+}
