@@ -18,7 +18,7 @@ try {
 
   const infisicalVars = parseEnvFile(output);
 
-  envVars["VITE_GOOGLE_CLIENT_ID"] = infisicalVars["GOOGLE_WEB_CLIENT_ID"];
+  envVars["VITE_GOOGLE_CLIENT_ID"] = infisicalVars["GOOGLE_WEB_CLIENT_ID"]
 
   const envContent = parseEnvVars([envVars]);
 
@@ -35,7 +35,7 @@ function parseEnvFile(fileContent) {
   for (const line of lines) {
     const [key, value] = line.split("=");
     if (key && value) {
-      envVars[key.trim()] = value.trim();
+      envVars[key.trim()] = value.trim().slice(1, -1)
     }
   }
   return envVars;
