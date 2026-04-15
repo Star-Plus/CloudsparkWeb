@@ -2,16 +2,20 @@
     import { onMount } from "svelte";
     import TypingEffect from "$lib/components/TypingEffect.svelte";
     import FlowField from "$lib/components/vfx/FlowField.svelte";
+    import { page } from "$app/state"
 
     async function handleGoogleSignIn() {
         const googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";
 
         // Using Implicit Flow (token/id_token direct response) instead of Authorization Code.
         // We also use the base URL for redirect_uri to avoid mismatch errors if /login isn't whitelisted in GCP.
-        const redirectUri = window.location.origin;
+
+        const redirectParam = page.url.searchParams.get('redirectUri');
+
+        const redirectUri = redirectParam ? redirectParam : window.location.origin;
 
         const params = new URLSearchParams({
-            client_id: "441746363812-qps3ctm0hvo5m2idfrvlu6ngieud9c6i.apps.googleusercontent.com",
+            client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
             redirect_uri: redirectUri,
             response_type: "token id_token",
             scope: "openid email profile",
@@ -44,7 +48,7 @@
                     class="relative size-24 object-contain select-none transition-transform duration-700 group-hover:scale-110"
                 />
             </div>
-            <h1 class="font-['Jost'] font-bold text-4xl select-none tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
+            <h1 class="font-['Jost'] font-bold text-4xl select-none tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white to-white/60">
                 CloudSpark
             </h1>
         </div>
@@ -58,6 +62,7 @@
 
         <!-- Buttons interactivity -->
         <div class="flex flex-col items-center space-y-4 max-w-xs w-full">
+            <!-- svelte-ignore event_directive_deprecated -->
             <button
                 type="button"
                 on:click={handleGoogleSignIn}
