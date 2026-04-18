@@ -1,8 +1,17 @@
-FROM node:25-alpine3.22 AS base
+FROM node:22-alpine AS build
 WORKDIR /app
 COPY package*.json ./
-
-FROM base AS development
 RUN npm install
 COPY . .
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+RUN npm run build
+
+FROM node:22-alpine AS production
+WORKDIR /app
+
+COPY --from=build /app/build ./build
+COPY --from=build /app/package.json ./
+
+RUN npm install --omit=dev
+
+EXPOSE 3000
+CMD ["node", "build/index.js"]
