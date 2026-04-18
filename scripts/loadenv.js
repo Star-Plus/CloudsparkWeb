@@ -12,7 +12,7 @@ try {
   const envVars = parseEnvFile(envExample);
 
   const output = execSync(
-    `infisical export --projectId=${PROJECT_ID} --env=${ENV} --format=dotenv`,
+    `infisical export --projectId=${PROJECT_ID} --env=${ENV} --silent --format=dotenv`,
     { encoding: "utf8" }
   );
 
@@ -33,6 +33,10 @@ function parseEnvFile(fileContent) {
   const lines = fileContent.split("\n");
   const envVars = {};
   for (const line of lines) {
+
+    if (line.startsWith('#', 1)) continue;
+    if (!line.includes('=')) continue;
+
     const [key, value] = line.split("=");
     if (key && value) {
       envVars[key.trim()] = value.trim().slice(1, -1)
