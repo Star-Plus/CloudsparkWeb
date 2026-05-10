@@ -1,14 +1,27 @@
 <script lang="ts">
-    import { page } from "$app/stores";
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
+	import AuthService from "$lib/features/auth/AuthService";
+    import { page } from "$app/state";
 
     // Track state to show a humanized error message if needed
-    let isAuthenticating = true;
-    let errorMessage = "Please wait while we log you in.";
+    let isAuthenticating = $state(true);
+    let errorMessage = $state("Please wait while we log you in.");
 
     onMount(async () => {
-        const idToken = $page.url.searchParams.get("token");
+        const hash = window.location.hash;
+
+        let idToken: string | null = null;
+
+		if (hash && hash.includes('id_token=')) {
+			console.log('Intercepted Google Implicit OAuth Hash');
+			const params = new URLSearchParams(hash.substring(1));
+			idToken = params.get('id_token');
+		} else {
+            console.warn("No OAuth hash found in URL. Returning to login.");
+            goto("/login");
+            return;
+        }
 
         if (!idToken) {
             console.warn("No ID token found in URL, returning to login.");
@@ -19,31 +32,20 @@
         console.log("Confirmed Google Auth Hash. Exchanging with backend...");
         
         try {
-            // Target HTTP port 5000 directly for local Dev, or Prod server otherwise.
-            const apiUrl = import.meta.env.DEV ? "http://localhost:5000/api" : "https://158.101.230.143/api";
+            const authService = AuthService.getInstance();
+            const resp = await authService.googleSignIn(idToken);
 
-            // Fire off the secure token exchange
-            const response = await fetch(`${apiUrl}/auth/google`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ idToken })
-            });
+            const redirectUrl = sessionStorage.getItem("auth_redirect") || "/";
+            sessionStorage.removeItem("auth_redirect");
 
-            if (!response.ok) {
-                // If it's a 500 error, it's likely the backend databases being down
-                throw new Error(`The backend responded with an error (Status: ${response.status}). Ensure the database is running.`);
-            }
-
-            const loginRes = await response.json();
-            console.log("Backend login successful. Hello,", loginRes.username);
-
-            // Store securely in browser layout
-            if (loginRes.token) localStorage.setItem("token", loginRes.token);
-            if (loginRes.username) localStorage.setItem("user", JSON.stringify({ username: loginRes.username }));
-
-            // Cleanly transition the user inwards
+            // Cleanly transition the user inward with a brief delay to show the success state
             setTimeout(() => {
-                goto(loginRes.firstTime ? "/profile/create" : "/");
+                if (resp.firstTime) {
+                    goto("/profile/create?redirect=" + encodeURIComponent(redirectUrl));
+                }
+                else {
+                    window.location.href = redirectUrl;
+                }
             }, 500);
 
         } catch (err) {
