@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import TypingEffect from "$lib/components/TypingEffect.svelte";
     import FlowField from "$lib/components/vfx/FlowField.svelte";
-    import { page } from "$app/state"
+	import { page } from "$app/state";
 
     async function handleGoogleSignIn() {
         const googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";
@@ -10,9 +10,14 @@
         // Using Implicit Flow (token/id_token direct response) instead of Authorization Code.
         // We also use the base URL for redirect_uri to avoid mismatch errors if /login isn't whitelisted in GCP.
 
-        const redirectParam = page.url.searchParams.get('redirectUri');
+        const authSuccessRedirectUri = page.url.searchParams.get("redirect") || "/";
+        const currentPageUrl = window.location.pathname + window.location.search;
 
-        const redirectUri = redirectParam ? redirectParam : window.location.origin;
+        if (currentPageUrl && currentPageUrl !== "/") {
+            sessionStorage.setItem("auth_redirect", authSuccessRedirectUri);
+        }
+
+        const redirectUri = window.location.origin + "/auth/confirm";
 
         const params = new URLSearchParams({
             client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
