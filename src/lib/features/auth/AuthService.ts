@@ -5,6 +5,8 @@ import User from "./User.model";
 export default class AuthService {
 
     static instance: AuthService;
+    
+    private user: User | null = null;
 
     static getInstance() {
         if (!AuthService.instance) {
@@ -14,17 +16,34 @@ export default class AuthService {
     }
 
     private constructor() {
+        // On initialization, check if we have credentials in localStorage
+        const token = localStorage.getItem("token");
+        const username = localStorage.getItem("username");
+        const userId = localStorage.getItem("userId");
+
+        if (token && username && userId) {
+            this.user = new User({
+                id: userId,
+                username,
+                token
+            });
+        }
     }
 
     saveCredentials(user: User) {
         localStorage.setItem("token", user.token);
         localStorage.setItem("username", user.username);
         localStorage.setItem("userId", user.id);
+        this.user = user;
     }
 
     isAuthenticated(): boolean {
         const token = localStorage.getItem("token");
         return !!token;
+    }
+
+    getUser(): User | null {
+        return this.user;
     }
 
     async googleSignIn(idToken: string) : Promise<LoginResponse> {
