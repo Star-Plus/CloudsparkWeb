@@ -65,8 +65,8 @@
     }
 
     .side-button {
-        background-color: var(--background-200);
-        color: var(--text-600);
+        background-color: var(--color-secondary-200);
+        color: var(--color-text-600);
         padding: 0.5rem;
         border-radius: var(--radius-button);
     }

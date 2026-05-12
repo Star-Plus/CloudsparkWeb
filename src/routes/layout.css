@@ -1,4 +1,4 @@
-@import '$lib/styles/colors/schema.css';
+@import '$lib/styles/colors/schema_a.css';
 
 @variant dark (&:where(.dark, .dark *));
 
