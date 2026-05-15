@@ -4,7 +4,7 @@
 </script>
 <div class="border-b border-background-200 p-2">
 
-    <a href="/" class="inline text-lg font-extrabold text-primary-950 ">
+    <a href="/" class="inline text-lg font-extrabold text-primary-950 hover:text-primary-600 transition-colors duration-200">
         <Icon icon="solar:cloud-linear" class="inline -translate-y-0.5 mr-1" />
         <h3 class="inline">Repository Name</h3>
     </a>

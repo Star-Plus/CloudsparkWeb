@@ -1,9 +1,30 @@
-<script>
+<script lang="ts">
+	import ActivityStream from "$lib/features/profile/ui/ActivityStream.svelte";
 	import ContributionMap from "$lib/features/profile/ui/ContributionMap.svelte";
 	import RepoCard from "$lib/features/profile/ui/RepoCard.svelte";
 	import Icon from "@iconify/svelte";
 
     let repos = [1,1,1,1,1,1]
+
+    let endDate = new Date();
+    let startDate = new Date(endDate.getFullYear(), endDate.getMonth() - 1, 1);
+
+    const contributions : {date: Date, amount: number}[] = []
+    for (let i = 0; i < 365; i++) {
+        contributions.push({
+            date: new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + i),
+            amount: Math.random() * 0.5
+        })
+    }
+
+    const contributionActivities : {date: Date, message: string, repo: string}[] = []
+    for (let i = 0; i < 10; i++) {
+        contributionActivities.push({
+            date: new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + i),
+            message: "Added a new feature",
+            repo: "starsaif/starsaif"
+        })
+    }
 
 </script>
 
@@ -11,7 +32,7 @@
     <title>starsaif (SAIF STAR)</title>
 </svelte:head>
 
-<div class="grid pt-6 grid-cols-3 grid-rows-2 px-12 gap-2">
+<div class="grid py-6 grid-cols-3 xl:px-72 lg:px-26 gap-5">
     <!-- User Information -->
     <section class="w-full flex items-start flex-col gap-3 row-span-2 col-span-1">
     
@@ -62,9 +83,20 @@
 
     <!-- User Contributions -->
     <section class="col-span-2 row-span-1 mt-6">
-        <h2 class="text-xl mb-3 font-semibold">Contributions</h2>
-        <h3 class="text-lg mb-2">Last 365 days</h3>
-        <ContributionMap />
+        <h2 class="text-xl mb-6 font-semibold">Contributions</h2>
+
+        <div class="flex flex-col gap-6">
+            <div>
+                <h3 class="mb-2 text-lg">Last 365 days - {contributions.length} contributions</h3>
+                <ContributionMap {contributions}  />
+            </div>
+    
+            <div class="grow">
+                <h3 class="mb-2 text-lg">Activity Stream</h3>
+                <ActivityStream contributions={contributionActivities} />
+            </div>
+        </div>
+
     </section>
 
 </div>
