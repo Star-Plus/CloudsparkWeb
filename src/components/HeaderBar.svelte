@@ -3,6 +3,7 @@
     import Icon from "@iconify/svelte";
 	import AuthService from "$lib/features/auth/AuthService";
 	import { goto } from "$app/navigation";
+	import theme from "$lib/stores/ThemeStore";
 
     let isDark = $state(false);
 
@@ -15,6 +16,7 @@
         isDark = !isDark;
         applyTheme(isDark);
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        theme.set(isDark ? 'dark' : 'light');
     }
 
     function applyTheme(dark: boolean) {
@@ -33,23 +35,26 @@
 
 </script>
 
-<nav class="bg-background-50 flex px-6 py-3 items-center justify-between">
+<nav class="flex items-center justify-between">
     
-    <a class="bg-background-950 rounded-circle p-1" href="/">
-        <img src="/Icon.png" alt="CloudSpark Logo" class="size-7 dark:invert" />
-    </a>
+    <div class="flex items-center gap-3">
+        <a class="bg-background-950 rounded-circle p-1" href="/">
+            <img src="/Icon.png" alt="CloudSpark Logo" class="size-7 dark:invert" />
+        </a>
+        <p class="font-bold">CloudSpark</p>
+    </div>
 
     <div>
 
         <button class="side-button" onclick={handleProfileClick}>
-            <Icon icon="solar:user-bold" class="text-text-600" />
+            <Icon icon="solar:user-linear" />
         </button>
 
         <button class="side-button" onclick={toggleTheme}>
             {#if isDark} 
-            <Icon icon="solar:sun-bold" /> 
+            <Icon icon="solar:sun-linear" /> 
             {:else} 
-            <Icon icon="solar:moon-bold" /> 
+            <Icon icon="solar:moon-linear" /> 
             {/if}
         </button>
 
@@ -65,8 +70,8 @@
     }
 
     .side-button {
-        background-color: var(--color-secondary-200);
-        color: var(--color-text-600);
+        border: 1px solid var(--color-background-300);
+        color: var(--color-text-800);
         padding: 0.5rem;
         border-radius: var(--radius-button);
     }

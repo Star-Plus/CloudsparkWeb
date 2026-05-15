@@ -8,11 +8,13 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
-<main class="">
+<main class="bg-background-50 min-h-screen">
 
-	<HeaderBar />
+	<div class="sticky top-0 left-0 z-10 bg-background-50 border-b border-background-300 py-4 px-6">
+		<HeaderBar />
+	</div>
 
-	<div>
+	<div class="w-full px-6 pt-6">
 		{@render children()}
 	</div>
 </main>

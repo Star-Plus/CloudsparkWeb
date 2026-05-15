@@ -68,11 +68,16 @@
 
     /* Roundness */
     --radius-button: 0.3rem;
+    --radius-box: 0.5rem;
     --radius-circle: 50%;
+
+    /* Fonts */
+    --font-primary: 'primary', sans-serif;
 }
 
 * {
     box-sizing: border-box;
+    font-family: var(--font-primary);
 }
 
 input:focus {
@@ -91,7 +96,8 @@ input:focus {
 
 body {
     overflow-x: hidden;
-    color: var(--color-text-950);
+    color: var(--color-text-900);
+    transition: background-color, color 0.6s ease-in-out;
 }
 
 @font-face {
@@ -102,7 +108,7 @@ body {
 }
 
 *::selection {
-    background-color: var(--color-primary);
+    background-color: var(--color-primary-500);
     color: var(--color-background);
 }
 
