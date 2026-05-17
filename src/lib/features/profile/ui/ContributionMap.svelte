@@ -66,7 +66,7 @@
     });
 </script>
 
-<div class="flex flex-col gap-1 text-xs text-gray-400 select-none">
+<div class="flex flex-col gap-1 text-xs text-gray-400 select-none overflow-x-auto overflow-y-hidden pb-2">
 
     <div class="flex gap-1">
         <div class="w-8"></div>
@@ -88,7 +88,7 @@
             {/each}
         </div>
 
-        <div class="grid grid-rows-7 grid-flow-col gap-1">
+        <div class="grid grid-rows-7 grid-flow-col gap-0.75">
             {#each Array(startOffset) as _}
                 <div class="size-3"></div>
             {/each}

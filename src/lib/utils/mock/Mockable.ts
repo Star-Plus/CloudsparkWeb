@@ -40,11 +40,15 @@ export class Mockable {
     });
   }
  
-  get mock(): boolean {
+  isMock(): boolean {
     return this.#mock;
   }
  
-  set mock(value: boolean) {
-    this.#mock = value;
+  mock() {
+    this.#mock = true;
+  }
+
+  unmock() {
+    this.#mock = false;
   }
 }
