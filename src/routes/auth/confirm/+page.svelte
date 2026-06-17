@@ -2,7 +2,6 @@
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
 	import AuthService from "$lib/features/auth/AuthService";
-    import { page } from "$app/state";
 
     // Track state to show a humanized error message if needed
     let isAuthenticating = $state(true);

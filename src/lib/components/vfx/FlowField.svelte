@@ -1,8 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
 
-    const colorPallete = ["#5337FF", "#8838FF"];
-
+    const colorPallete: string[] = [];
 
     class Particle {
     
@@ -131,6 +130,12 @@
     }
 
     onMount(() => {
+
+        const rootStyles = window.getComputedStyle(document.documentElement);
+
+        for (let i = 1; i < 10; i++) {
+            colorPallete.push(rootStyles.getPropertyValue(`--color-primary-${i * 100}`).trim());
+        }
         
         const canvas = document.querySelector('canvas') as HTMLCanvasElement;
         
@@ -150,12 +155,11 @@
     
         const effect = new Effect(canvas.width, canvas.height);
         effect.init(canvas.width, canvas.height);
-
-        const clearRatio = Math.random() * 0.8 + 0.005;
     
         function animate() {
     
-            ctx.fillStyle = `rgba(12,12,12, ${clearRatio})`;
+            const backgroundColor = rootStyles.getPropertyValue('--color-background-900').trim();
+            ctx.fillStyle = backgroundColor;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     

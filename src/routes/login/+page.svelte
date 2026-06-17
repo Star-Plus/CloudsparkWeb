@@ -35,13 +35,17 @@
     });
 </script>
 
+<svelte:head>
+    <title>CloudsPark - Login</title>
+</svelte:head>
+
 <div class="login-wrapper font-primary overflow-hidden">
     <div class="animated-bg"></div>
     <div class="ambient-glow"></div>
     <FlowField />
 
     <div
-        class="relative w-full h-full flex flex-col justify-center items-center p-12 text-txt-main z-10"
+        class="relative w-full h-full flex flex-col justify-center items-center p-12 text-text-50 z-10"
     >
 
         <!-- Logo and Brand Name -->
@@ -53,14 +57,14 @@
                     class="relative size-24 object-contain select-none transition-transform duration-700 group-hover:scale-110"
                 />
             </div>
-            <h1 class="font-['Jost'] font-bold text-4xl select-none tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white to-white/60">
-                CloudSpark
+            <h1 class="font-bold text-4xl select-none tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white to-white/60">
+                Cloudspark
             </h1>
         </div>
 
         <!-- Welcome Message with Typing Effect -->
         <div class="mb-12 max-w-sm text-center">
-            <div class="text-txt-muted text-lg font-light tracking-wide">
+            <div class="text-text-200 text-lg font-light tracking-wide">
                 <TypingEffect />
             </div>
         </div>
@@ -78,7 +82,7 @@
             </button>
         </div>
 
-        <footer class="absolute bottom-12 w-full text-center text-white/20 text-xs tracking-widest uppercase select-none">
+        <footer class="absolute bottom-12 w-full text-center text-text-400 text-xs tracking-widest uppercase select-none">
             Add your touch.
         </footer>
     </div>
@@ -86,16 +90,16 @@
 
 <style>
     .login-wrapper {
-        position: relative;
-        width: 100vw;
+        width: 100%;
         height: 100vh;
-        background-color: #121212;
+        overflow: hidden;
+        position: relative;
     }
 
     .animated-bg {
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at 50% 50%, #1c1c1c 0%, #121212 70%);
+        background: radial-gradient(circle at 50% 50%, var(--color-background-950) 0%, var(--color-background-950) 70%);
         opacity: 0.5;
         animation: pulse 10s ease-in-out infinite;
     }
@@ -107,7 +111,7 @@
         transform: translateX(-50%);
         width: 100%;
         height: 100%;
-        background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
+        background: radial-gradient(ellipse at top, var(--color-background-900) 0%, transparent 60%);
         pointer-events: none;
     }
 
@@ -121,8 +125,8 @@
         align-items: center;
         gap: 1rem;
         padding: 0.875rem 1.5rem;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: var(--color-background-900);
+        border: 1px solid var(--color-background-800);
         border-radius: 1rem;
         color: white;
         font-weight: 500;
@@ -133,8 +137,8 @@
     }
 
     .auth-button:hover {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.2);
+        background: var(--color-background-800);
+        border-color: var(--color-background-900);
         transform: translateY(-2px);
         box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.5);
     }
