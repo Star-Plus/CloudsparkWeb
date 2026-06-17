@@ -3,25 +3,14 @@
     import Icon from "@iconify/svelte";
 	import AuthService from "$lib/features/auth/AuthService";
 	import { goto } from "$app/navigation";
-	import theme from "$lib/stores/ThemeStore";
+	import ThemeController from "$lib/controllers/theme/ThemeController";
 
     let isDark = $state(false);
+    let themeController = $state(ThemeController.getInstance());
 
     onMount(() => {
-        isDark = localStorage.getItem('theme') === 'dark';
-        applyTheme(isDark);
+        themeController = ThemeController.getInstance();
     });
-
-    function toggleTheme() {
-        isDark = !isDark;
-        applyTheme(isDark);
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        theme.set(isDark ? 'dark' : 'light');
-    }
-
-    function applyTheme(dark: boolean) {
-        document.documentElement.classList.toggle('dark', dark);
-    }
 
     function handleProfileClick() {
         const user = AuthService.getInstance().getUser();
@@ -50,7 +39,7 @@
             <Icon icon="solar:user-linear" />
         </button>
 
-        <button class="side-button" onclick={toggleTheme}>
+        <button class="side-button" onclick={themeController.toggleTheme}>
             {#if isDark} 
             <Icon icon="solar:sun-linear" /> 
             {:else} 

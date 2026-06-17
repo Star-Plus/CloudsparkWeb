@@ -158,8 +158,16 @@
     
         function animate() {
     
-            const backgroundColor = rootStyles.getPropertyValue('--color-background-900').trim();
-            ctx.fillStyle = backgroundColor;
+            const isDarkMode = localStorage.getItem('theme') === 'dark';
+
+            if (isDarkMode) {
+                const backgroundColor = rootStyles.getPropertyValue('--color-background-950').trim();
+                ctx.fillStyle = backgroundColor;
+            }
+            else {
+                const backgroundColor = rootStyles.getPropertyValue('--color-background-50').trim();
+                ctx.fillStyle = backgroundColor;
+            }
             ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     

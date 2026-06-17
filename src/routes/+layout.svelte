@@ -5,6 +5,7 @@
 	import { page } from '$app/stores';
 	import navbarExeluded from '../global/NonNavbarPages';
 	import { onMount } from 'svelte';
+	import ThemeContext from '$lib/controllers/theme/ThemeContext.svelte';
 
 	let { children } = $props();
 
@@ -21,7 +22,9 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
-<main class="min-h-screen bg-background-950">
+<ThemeContext />
+
+<main class="min-h-screen bg-background-50">
 
 	{#if renderNavbar}
 		<div class="sticky top-0 left-0 z-10 bg-background-50 border-b border-background-300 py-4 px-6">

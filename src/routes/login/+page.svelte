@@ -125,7 +125,7 @@
         align-items: center;
         gap: 1rem;
         padding: 0.875rem 1.5rem;
-        background: var(--color-background-900);
+        background: var(--color-background-100);
         border: 1px solid var(--color-background-800);
         border-radius: 1rem;
         color: white;
