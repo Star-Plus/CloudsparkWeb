@@ -1,6 +1,7 @@
 import { Mockable } from "$lib/utils/mock/Mockable";
 import type { AxiosInstance } from "axios";
 import RepositoryDTO, { type RepositoryPayload } from "../dtos/RepositoryResponse";
+import PeriodContributionDto, { type PeriodContributionPayload } from "../dtos/PeriodContribution";
 
 export default class UserPortfolioService extends Mockable {
     api : AxiosInstance;
@@ -14,6 +15,20 @@ export default class UserPortfolioService extends Mockable {
         const dto = new RepositoryDTO();
         try {
             const resp = await this.api.get<RepositoryPayload[]>(`/remotes/${username}`);
+            dto.setPayload(resp.data);
+        }
+        catch (err) {
+            dto.setError(err as Error);
+        }
+
+        return dto;
+    }
+
+    async fetchUserContributionOverPeriod(username: string, start: Date, end: Date) : Promise<PeriodContributionDto> {
+        const dto = new PeriodContributionDto();
+
+        try {
+            const resp = await this.api.get<PeriodContributionPayload>(`/commits/${username}/activity?start=${start.toISOString()}&end=${end.toISOString()}`);            
             dto.setPayload(resp.data);
         }
         catch (err) {
@@ -39,5 +54,22 @@ export default class UserPortfolioService extends Mockable {
 
         dto.setPayload([] as RepositoryPayload[]);
         return dto;
+    }
+
+    async mock_fetchUserContributionOverPeriod(username: string, start: Date, end: Date) : Promise<PeriodContributionDto> {
+        const dto = new PeriodContributionDto();
+
+        const daysInBetween: number = (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
+
+        const payload : PeriodContributionPayload = {
+            start,
+            end,
+            days: daysInBetween,
+            counts: Array.from({length: daysInBetween}, () => Math.floor(Math.random() * 100))
+        };
+
+        dto.setPayload(payload);
+        return dto;
+        
     }
 }

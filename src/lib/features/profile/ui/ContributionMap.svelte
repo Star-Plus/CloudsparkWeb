@@ -101,7 +101,7 @@
             <div class="relative contrib-cont">
                 <div class="size-3 rounded-sm transition-colors duration-300" style="background-color: {contrib.color};"></div>
                 <p class="absolute hidden bg-background-300 z-10 p-1 rounded-button top-0 left-1/2 transform -translate-x-1/2 -translate-y-[110%] text-xs text-text-950 contrib-info whitespace-nowrap">
-                    {(contrib.amount * 100).toFixed(0)} contributions on {contrib.date.getDate()} {MONTH_NAMES[contrib.date.getMonth()]}
+                    {(contrib.amount).toFixed(0)} contributions on {contrib.date.getDate()} {MONTH_NAMES[contrib.date.getMonth()]}
                 </p>
             </div>
             {/each}

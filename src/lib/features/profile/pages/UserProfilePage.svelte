@@ -7,23 +7,15 @@
 	import { onMount } from "svelte";
 	import UserSection from "../ui/UserSection.svelte";
 	import { TransferState } from "$lib/utils/models/BaseDTO";
-	import { page } from "$app/state";
 	import type UserPortfolioService from "../services/UserPortfolioService";
 	import RepositoryDTO from "../dtos/RepositoryResponse";
+    import PeriodContributionDto from "../dtos/PeriodContribution";
 
-    let {userService, userPortfolioService}: {userService: UserService, userPortfolioService: UserPortfolioService} = $props();
-    let {params} = page;
+    let {username, userService, userPortfolioService}: 
+    {username: string, userService: UserService, userPortfolioService: UserPortfolioService} = $props();
     
     let endDate = new Date();
-    let startDate = new Date(endDate.getFullYear(), endDate.getMonth() - 1, 1);
-    
-    const contributions : {date: Date, amount: number}[] = []
-    for (let i = 0; i < 365; i++) {
-        contributions.push({
-            date: new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + i),
-            amount: Math.random() * 0.5
-        })
-    }
+    let startDate = new Date(endDate.getTime() - 365 * 24 * 60 * 60 * 1000);
     
     const contributionActivities : {date: Date, message: string, repo: string}[] = []
     for (let i = 0; i < 10; i++) {
@@ -34,26 +26,39 @@
         })
     }
     
-    let userProfileResponse = $state<UserProfileResponse>(new UserProfileResponse());
+    let userInfoResponse = $state<UserProfileResponse>(new UserProfileResponse());
     let repos = $state<RepositoryDTO>(new RepositoryDTO());
+    let contributionsCount = $state<PeriodContributionDto>(new PeriodContributionDto());
+
+    const contributions = $derived<{date: Date, amount: number}[]>(
+        contributionsCount.state == TransferState.SUCCESS ? 
+        (contributionsCount.payload?.counts.map((c, i) => 
+            ({date: new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + i), amount: c})) ?? [])
+        : []
+    )
 
     onMount(()=> {
-        if (!params.username) return;
+        if (!username) return;
 
-        userService.getProfileByUsername(params.username).then(profile => {
-            userProfileResponse = profile;
+        userService.getProfileByUsername(username).then(profile => {
+            userInfoResponse = profile;
         })
 
-        userPortfolioService.fetchUserCloudRepositories(params.username).then(profile => {
+        userPortfolioService.fetchUserCloudRepositories(username).then(profile => {
             repos = profile;
         })
+
+        userPortfolioService.fetchUserContributionOverPeriod(username, startDate, endDate).then(profile => {
+            contributionsCount = profile;
+        })
+
     })
 
 </script>
 
 <svelte:head>
-    {#if userProfileResponse.state == TransferState.SUCCESS}
-    <title>{userProfileResponse.payload?.username} ({userProfileResponse.payload?.fullName})</title>
+    {#if userInfoResponse.state == TransferState.SUCCESS}
+    <title>{userInfoResponse.payload?.username} ({userInfoResponse.payload?.fullName})</title>
     {:else}
     <title>CloudSpark | Profile</title>
     {/if}
@@ -63,7 +68,7 @@
 
     <!-- User Information -->
     <section class="w-full row-span-2 col-span-1">
-        <UserSection {userProfileResponse} />
+        <UserSection userProfileResponse={userInfoResponse} />
     </section>
     
     <!-- User Repos -->
