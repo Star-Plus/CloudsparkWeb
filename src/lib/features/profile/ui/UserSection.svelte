@@ -2,21 +2,21 @@
     import Icon from "@iconify/svelte";
 	import type UserProfileResponse from "../services/dtos/UserProfileResponse";
 	import type { UserProfilePayload } from "../services/dtos/UserProfileResponse";
-	import { ResponseState } from "$lib/utils/models/Response";
+	import { TransferState } from "$lib/utils/models/BaseDTO";
 	import "@aejkatappaja/phantom-ui";
 
     let {userProfileResponse} : {userProfileResponse: UserProfileResponse} = $props();
     
     const userProfile : UserProfilePayload | null = $derived(
-        userProfileResponse.state == ResponseState.SUCCESS ? userProfileResponse.payload : null
+        userProfileResponse.state == TransferState.SUCCESS ? userProfileResponse.payload : null
     )
 
     const isLoading = $derived(
-        userProfileResponse.state == ResponseState.LOADING
+        userProfileResponse.state == TransferState.LOADING
     )
 </script>
 
-{#if userProfileResponse.state != ResponseState.ERROR}
+{#if userProfileResponse.state != TransferState.ERROR}
 
 <phantom-ui loading={isLoading} reveal={0.5}>
     <div class="flex lg:items-start items-center flex-col gap-3">

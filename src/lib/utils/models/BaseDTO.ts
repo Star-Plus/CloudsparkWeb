@@ -1,27 +1,27 @@
 import Stateful from "./Stateful.svelte";
 
-export const enum ResponseState {
+export const enum TransferState {
     LOADING,
     SUCCESS,
     ERROR
 }
 
-export default class Response<TPayload> extends Stateful<ResponseState> {
+export default class DTO<TPayload> extends Stateful<TransferState> {
     protected _error: Error | null = null;
     protected _payload: TPayload | null = null;
 
     constructor() {
-        super(ResponseState.LOADING);
+        super(TransferState.LOADING);
     }
 
     setError(error: Error) {
         this._error = error;
-        this.state = ResponseState.ERROR;
+        this.state = TransferState.ERROR;
     }
 
     setPayload(payload: TPayload) {
         this._payload = payload;
-        this.state = ResponseState.SUCCESS;
+        this.state = TransferState.SUCCESS;
     }
 
     get payload() : TPayload | null {

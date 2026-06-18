@@ -1,7 +1,7 @@
 import { Mockable } from "$lib/utils/mock/Mockable";
 import type { AxiosInstance } from "axios";
-import UserProfileResponse from "./dtos/UserProfileResponse";
-import type { UserProfilePayload } from "./dtos/UserProfileResponse";
+import UserProfileResponse from "../dtos/UserProfileResponse";
+import type { UserProfilePayload } from "../dtos/UserProfileResponse";
 
 export default class UserService extends Mockable {
     private api : AxiosInstance;

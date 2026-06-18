@@ -1,4 +1,4 @@
-import Response, { ResponseState } from "$lib/utils/models/Response";
+import DTO from "$lib/utils/models/BaseDTO";
 
 export type UserProfilePayload = {
     fullName: string;
@@ -15,4 +15,4 @@ export type UserProfilePayload = {
     following: number;
 }
 
-export default class UserProfileResponse extends Response<UserProfilePayload> {}
+export default class UserProfileResponse extends DTO<UserProfilePayload> {}
