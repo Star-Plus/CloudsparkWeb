@@ -56,7 +56,7 @@
 <div class="grid py-6 lg:grid-cols-3 grid-cols-1 2xl:px-70 xl:px-40 lg:px-26 md:px-10 px-4 gap-5">
 
     <!-- User Information -->
-    <section class="w-full flex lg:items-start items-center flex-col gap-3 row-span-2 col-span-1">
+    <section class="w-full row-span-2 col-span-1">
     
         <UserSection {userProfileResponse} />
         
