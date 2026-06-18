@@ -1,7 +1,7 @@
 <script lang="ts">
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
-	import HeaderBar from '../components/HeaderBar.svelte';
+	import HeaderBar from '../lib/components/HeaderBar.svelte';
 	import { page } from '$app/stores';
 	import navbarExeluded from '../global/NonNavbarPages';
 	import { onMount } from 'svelte';

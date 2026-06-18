@@ -36,14 +36,14 @@
     <div>
 
         <button class="side-button" onclick={handleProfileClick}>
-            <Icon icon="solar:user-linear" />
+            <Icon icon="mynaui:user" />
         </button>
 
         <button class="side-button" onclick={themeController.toggleTheme}>
             {#if isDark} 
-            <Icon icon="solar:sun-linear" /> 
+            <Icon icon="mynaui:sun" /> 
             {:else} 
-            <Icon icon="solar:moon-linear" /> 
+            <Icon icon="mynaui:moon" /> 
             {/if}
         </button>
 
@@ -63,6 +63,8 @@
         color: var(--color-text-800);
         padding: 0.5rem;
         border-radius: var(--radius-button);
+        font-size: 1.2rem;
+        cursor: pointer;
     }
 
 </style>

@@ -1,6 +1,10 @@
-<script>
+<script lang="ts">
 	import UserProfilePage from "$lib/features/profile/pages/UserProfilePage.svelte";
 	import UserService from "$lib/features/profile/services/UserService";
+	import appApi from "$lib/utils/apis/appApi";
+
+	const api = appApi;
 
 </script>
-<UserProfilePage userService={new UserService()} />
+
+<UserProfilePage userService={new UserService(api)} />
