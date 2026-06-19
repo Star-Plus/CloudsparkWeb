@@ -39,12 +39,7 @@
 
             // Cleanly transition the user inward with a brief delay to show the success state
             setTimeout(() => {
-                if (resp.firstTime) {
-                    goto("/profile/create?redirect=" + encodeURIComponent(redirectUrl));
-                }
-                else {
-                    window.location.href = redirectUrl;
-                }
+                    window.location.href = redirectUrl + "?token=" + resp.token;
             }, 500);
 
         } catch (err) {
