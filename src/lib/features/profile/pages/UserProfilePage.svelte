@@ -10,6 +10,7 @@
 	import type UserPortfolioService from "../services/UserPortfolioService";
 	import RepositoryDTO from "../dtos/RepositoryResponse";
     import PeriodContributionDto from "../dtos/PeriodContribution";
+	import ContributionActivityStreamDto from "../dtos/ContributionActivityStream";
 
     let {username, userService, userPortfolioService}: 
     {username: string, userService: UserService, userPortfolioService: UserPortfolioService} = $props();
@@ -17,18 +18,10 @@
     let endDate = new Date();
     let startDate = new Date(endDate.getTime() - 365 * 24 * 60 * 60 * 1000);
     
-    const contributionActivities : {date: Date, message: string, repo: string}[] = []
-    for (let i = 0; i < 10; i++) {
-        contributionActivities.push({
-            date: new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + i),
-            message: "Added a new feature",
-            repo: "starsaif/starsaif"
-        })
-    }
-    
     let userInfoResponse = $state<UserProfileResponse>(new UserProfileResponse());
     let repos = $state<RepositoryDTO>(new RepositoryDTO());
     let contributionsCount = $state<PeriodContributionDto>(new PeriodContributionDto());
+    let contributionsStream = $state<ContributionActivityStreamDto>(new ContributionActivityStreamDto());
 
     const contributions = $derived<{date: Date, amount: number}[]>(
         contributionsCount.state == TransferState.SUCCESS ? 
@@ -36,6 +29,9 @@
             ({date: new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + i), amount: c})) ?? [])
         : []
     )
+
+    const activityStreamPageSize = 8;
+    const activityStreamPage = $state<number>(0);
 
     onMount(()=> {
         if (!username) return;
@@ -52,6 +48,9 @@
             contributionsCount = profile;
         })
 
+        userPortfolioService.fetchUserActivityStream(username, activityStreamPageSize, activityStreamPage).then(profile => {
+            contributionsStream = profile;
+        })
     })
 
 </script>
@@ -93,7 +92,7 @@
     
             <div class="grow">
                 <h3 class="mb-2 text-lg">Activity Stream</h3>
-                <ActivityStream contributions={contributionActivities} />
+                <ActivityStream activityStream={contributionsStream} />
             </div>
         </div>
 
