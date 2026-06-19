@@ -11,12 +11,10 @@
         // Using Implicit Flow (token/id_token direct response) instead of Authorization Code.
         // We also use the base URL for redirect_uri to avoid mismatch errors if /login isn't whitelisted in GCP.
 
-        const authSuccessRedirectUri = page.url.searchParams.get("redirect") || "/";
-        const currentPageUrl = window.location.pathname + window.location.search;
+        const authSuccessRedirectUri = page.url.searchParams.get("redirectUrl") || "/";
 
-        if (currentPageUrl && currentPageUrl !== "/") {
-            sessionStorage.setItem("auth_redirect", authSuccessRedirectUri);
-        }
+        console.log("Auth redirect available");
+        sessionStorage.setItem("auth_redirect", authSuccessRedirectUri);
 
         const redirectUri = window.location.origin + "/auth/confirm";
 
