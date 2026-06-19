@@ -3,6 +3,7 @@
     import TypingEffect from "$lib/components/TypingEffect.svelte";
     import FlowField from "$lib/components/vfx/FlowField.svelte";
 	import { page } from "$app/state";
+	import ThemeController from "$lib/controllers/theme/ThemeController";
 
     async function handleGoogleSignIn() {
         const googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";
@@ -30,8 +31,10 @@
         window.location.href = `${googleAuthUrl}?${params.toString()}`;
     }
 
+    let isDark = $state(false);
+
     onMount(() => {
-        console.log("Web Auth Page Mounted");
+        isDark = ThemeController.getInstance().isDark;
     });
 </script>
 
@@ -54,17 +57,18 @@
                 <img
                     src="/Icon.png"
                     alt="CloudSpark logo"
-                    class="relative size-24 object-contain select-none transition-transform duration-700 group-hover:scale-110"
+                    class={`relative size-24 object-contain select-none transition-transform duration-700 group-hover:scale-110 ${isDark ? '' : 'invert'}`}
+                
                 />
             </div>
-            <h1 class="font-bold text-4xl select-none tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white to-white/60">
+            <h1 class="font-bold text-4xl select-none tracking-tight bg-clip-text text-transparent bg-linear-to-b from-text-900 to-text-700">
                 Cloudspark
             </h1>
         </div>
 
         <!-- Welcome Message with Typing Effect -->
         <div class="mb-12 max-w-sm text-center">
-            <div class="text-text-200 text-lg font-light tracking-wide">
+            <div class="text-text-800 text-lg font-light tracking-wide">
                 <TypingEffect />
             </div>
         </div>
@@ -78,11 +82,11 @@
                 class="auth-button google-auth w-full flex justify-center"
             >
                 <iconify-icon icon="flat-color-icons:google" width="22" height="22"></iconify-icon>
-                <span>Sign in with Google</span>
+                <span class="text-text-900">Sign in with Google</span>
             </button>
         </div>
 
-        <footer class="absolute bottom-12 w-full text-center text-text-400 text-xs tracking-widest uppercase select-none">
+        <footer class="absolute bottom-12 w-full text-center text-text-600 text-xs tracking-widest uppercase select-none">
             Add your touch.
         </footer>
     </div>
@@ -99,7 +103,7 @@
     .animated-bg {
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at 50% 50%, var(--color-background-950) 0%, var(--color-background-950) 70%);
+        background: radial-gradient(circle at 50% 50%, var(--color-background-200) 0%, var(--color-background-50) 70%);
         opacity: 0.5;
         animation: pulse 10s ease-in-out infinite;
     }
@@ -111,7 +115,7 @@
         transform: translateX(-50%);
         width: 100%;
         height: 100%;
-        background: radial-gradient(ellipse at top, var(--color-background-900) 0%, transparent 60%);
+        background: radial-gradient(ellipse at top, var(--color-background-100) 0%, transparent 100%);
         pointer-events: none;
     }
 
@@ -126,7 +130,7 @@
         gap: 1rem;
         padding: 0.875rem 1.5rem;
         background: var(--color-background-100);
-        border: 1px solid var(--color-background-800);
+        border: 1px solid var(--color-background-200);
         border-radius: 1rem;
         color: white;
         font-weight: 500;
@@ -137,8 +141,8 @@
     }
 
     .auth-button:hover {
-        background: var(--color-background-800);
-        border-color: var(--color-background-900);
+        background: var(--color-background-200);
+        border-color: var(--color-background-300);
         transform: translateY(-2px);
         box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.5);
     }

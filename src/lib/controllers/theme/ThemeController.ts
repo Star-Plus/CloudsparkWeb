@@ -1,6 +1,6 @@
 export default class ThemeController {
 
-    private isDark: boolean;
+    private _isDark: boolean;
 
     private static instance: ThemeController;
 
@@ -8,8 +8,8 @@ export default class ThemeController {
         if (!window) throw new Error('ThemeController can only be initialized in the browser');
         ThemeController.instance = this;
 
-        this.isDark = localStorage.getItem('theme') === 'dark';
-        this.applyTheme(this.isDark);
+        this._isDark = localStorage.getItem('theme') === 'dark';
+        this.applyTheme(this._isDark);
     }
 
     static getInstance(): ThemeController {
@@ -28,14 +28,18 @@ export default class ThemeController {
             localStorage.setItem('theme', 'light');
         }
 
-        this.isDark = isDark;
+        this._isDark = isDark;
     }
 
     toggleTheme() {
-        this.applyTheme(!this.isDark);
+        this.applyTheme(!this._isDark);
     }
 
     getTheme(): boolean {
-        return this.isDark;
+        return this._isDark;
+    }
+
+    get isDark(): boolean {
+        return this._isDark;
     }
 }
