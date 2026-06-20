@@ -1,30 +1,50 @@
 <script lang="ts">
     import Icon from "@iconify/svelte";
-    let {contributions = []}: {contributions: {date: Date, message: string, repo: string}[]} = $props();
+	import type ContributionActivityStreamDto from "../dtos/ContributionActivityStream";
+	import { TransferState } from "$lib/utils/models/BaseDTO";
+	import type { ActivityStreamPayload } from "../dtos/ContributionActivityStream";
+
+    let {activityStream} : {activityStream: ContributionActivityStreamDto} = $props();
+    let contributionsPages = $state<ActivityStreamPayload[]>([]);
+
+    $effect(() => {
+        if (activityStream.state == TransferState.SUCCESS) {
+            if (contributionsPages.find(c => c.page === activityStream.payload!.page) === undefined) {
+                contributionsPages.push(activityStream.payload!);
+            }
+        }
+    })
+
 </script>
 
 <div class="activity-stream">
-    {#if contributions.length === 0}
+    {#if contributionsPages.length === 0}
         <div class="empty-state">
             <p>No activity yet.</p>
         </div>
     {/if}
 
-    {#each contributions as contrib}
-        <article class="activity-item">
-            <div class="event-meta">
-                <div class="event-meta-left">
-                    <Icon icon="solar:calendar-linear" class="event-icon" />
-                    <span class="event-date">{contrib.date.toDateString()}</span>
+    <phantom-ui loading={activityStream.state == TransferState.LOADING} reveal={0.5}>
+    {#each contributionsPages as page}
+        {#each page.commits as contrib}
+            <article class="activity-item">
+                <div class="event-meta">
+                    <div class="event-meta-left">
+                        <Icon icon="mynaui:calendar" class="event-icon" />
+                        <span class="event-date">
+                            {contrib.timestamp.toLocaleDateString()} {contrib.timestamp.toLocaleTimeString()}
+                        </span>
+                    </div>
+                    <span class="event-repo">
+                        <Icon icon="mynaui:folder" class="event-icon repo-icon" />
+                        {contrib.remote}
+                    </span>
                 </div>
-                <span class="event-repo">
-                    <Icon icon="solar:folder-linear" class="event-icon repo-icon" />
-                    {contrib.repo}
-                </span>
-            </div>
-            <p class="event-message">{contrib.message}</p>
-        </article>
+                <p class="event-message">{contrib.message}</p>
+            </article>
+        {/each}
     {/each}
+    </phantom-ui>
 </div>
 
 <style>

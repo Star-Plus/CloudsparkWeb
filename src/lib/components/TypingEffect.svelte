@@ -39,7 +39,7 @@
   }
 </script>
 
-<h2 class="font-['Hanken_Grotesk'] font-semibold text-white text-lg mb-2 min-h-6">
+<h2 class="font-['Hanken_Grotesk'] font-semibold text-900 text-lg mb-2 min-h-6">
   {displayedHeading}
   {#if cursorVisible && displayedHeading.length < headingText.length}
     <span class="typing-cursor">|</span>

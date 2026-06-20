@@ -3,25 +3,14 @@
     import Icon from "@iconify/svelte";
 	import AuthService from "$lib/features/auth/AuthService";
 	import { goto } from "$app/navigation";
-	import theme from "$lib/stores/ThemeStore";
+	import ThemeController from "$lib/controllers/theme/ThemeController";
 
     let isDark = $state(false);
+    let themeController = $state(ThemeController.getInstance());
 
     onMount(() => {
-        isDark = localStorage.getItem('theme') === 'dark';
-        applyTheme(isDark);
+        themeController = ThemeController.getInstance();
     });
-
-    function toggleTheme() {
-        isDark = !isDark;
-        applyTheme(isDark);
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        theme.set(isDark ? 'dark' : 'light');
-    }
-
-    function applyTheme(dark: boolean) {
-        document.documentElement.classList.toggle('dark', dark);
-    }
 
     function handleProfileClick() {
         const user = AuthService.getInstance().getUser();
@@ -47,14 +36,14 @@
     <div>
 
         <button class="side-button" onclick={handleProfileClick}>
-            <Icon icon="solar:user-linear" />
+            <Icon icon="mynaui:user" />
         </button>
 
-        <button class="side-button" onclick={toggleTheme}>
+        <button class="side-button" onclick={themeController.toggleTheme}>
             {#if isDark} 
-            <Icon icon="solar:sun-linear" /> 
+            <Icon icon="mynaui:sun" /> 
             {:else} 
-            <Icon icon="solar:moon-linear" /> 
+            <Icon icon="mynaui:moon" /> 
             {/if}
         </button>
 
@@ -74,6 +63,8 @@
         color: var(--color-text-800);
         padding: 0.5rem;
         border-radius: var(--radius-button);
+        font-size: 1.2rem;
+        cursor: pointer;
     }
 
 </style>

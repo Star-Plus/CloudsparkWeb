@@ -158,10 +158,9 @@
     
         function animate() {
     
-            const backgroundColor = rootStyles.getPropertyValue('--color-background-900').trim();
+            const backgroundColor = rootStyles.getPropertyValue('--color-background-50').trim();
             ctx.fillStyle = backgroundColor;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
     
             effect.render(ctx);
             requestAnimationFrame(animate);

@@ -1,5 +1,6 @@
 <script lang="ts">
-    import theme from "$lib/stores/ThemeStore";
+	import ThemeController from "$lib/controllers/theme/ThemeController";
+
     // @ts-ignore
     import { Color } from "color-alchemy";
     import { onMount } from "svelte";
@@ -13,6 +14,8 @@
     const DAY_LABELS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
     let rawColor = $state('');
+
+    let themeController : ThemeController;
 
     const startDate  = $derived(contributions.length ? new Date(contributions[0].date) : new Date());
     const startOffset = $derived(startDate.getDay());
@@ -39,7 +42,7 @@
     const getContributionColor = (amount: number): string => {
         if (!rawColor) return 'transparent';
         const color = new Color(rawColor).desaturate((1 - amount) * 100);
-        return $theme === 'dark'
+        return themeController.getTheme()
             ? color.darken((1 - amount) * 40).toHex()
             : color.lighten((1 - amount) * 40).toHex();
     };
@@ -60,6 +63,8 @@
     );
 
     onMount(() => {
+        themeController = ThemeController.getInstance();
+
         rawColor = getComputedStyle(document.documentElement)
             .getPropertyValue('--color-primary-500')
             .trim();
@@ -96,7 +101,7 @@
             <div class="relative contrib-cont">
                 <div class="size-3 rounded-sm transition-colors duration-300" style="background-color: {contrib.color};"></div>
                 <p class="absolute hidden bg-background-300 z-10 p-1 rounded-button top-0 left-1/2 transform -translate-x-1/2 -translate-y-[110%] text-xs text-text-950 contrib-info whitespace-nowrap">
-                    {(contrib.amount * 100).toFixed(0)} contributions on {contrib.date.getDate()} {MONTH_NAMES[contrib.date.getMonth()]}
+                    {(contrib.amount).toFixed(0)} contributions on {contrib.date.getDate()} {MONTH_NAMES[contrib.date.getMonth()]}
                 </p>
             </div>
             {/each}

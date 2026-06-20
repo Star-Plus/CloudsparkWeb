@@ -35,16 +35,12 @@
             const resp = await authService.googleSignIn(idToken);
 
             const redirectUrl = sessionStorage.getItem("auth_redirect") || "/";
+            console.log("Redirect URL", redirectUrl);
             sessionStorage.removeItem("auth_redirect");
 
             // Cleanly transition the user inward with a brief delay to show the success state
             setTimeout(() => {
-                if (resp.firstTime) {
-                    goto("/profile/create?redirect=" + encodeURIComponent(redirectUrl));
-                }
-                else {
-                    window.location.href = redirectUrl;
-                }
+                    window.location.href = redirectUrl + "?token=" + resp.token;
             }, 500);
 
         } catch (err) {
