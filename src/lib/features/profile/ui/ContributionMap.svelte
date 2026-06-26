@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ThemeController from "$lib/controllers/theme/ThemeController";
+	import ThemeController from "$lib/controllers/theme/ThemeController.svelte";
 
     // @ts-ignore
     import { Color } from "color-alchemy";

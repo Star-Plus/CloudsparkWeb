@@ -3,7 +3,7 @@
     import TypingEffect from "$lib/components/TypingEffect.svelte";
     import FlowField from "$lib/components/vfx/FlowField.svelte";
 	import { page } from "$app/state";
-	import ThemeController from "$lib/controllers/theme/ThemeController";
+	import ThemeController from "$lib/controllers/theme/ThemeController.svelte";
 
     async function handleGoogleSignIn() {
         const googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";

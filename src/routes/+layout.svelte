@@ -6,12 +6,15 @@
 	import navbarExeluded from '../global/NonNavbarPages';
 	import { onMount } from 'svelte';
 	import ThemeContext from '$lib/controllers/theme/ThemeContext.svelte';
+	import { initializeTelemetry } from '$lib/utils/observe/telemetry';
 
 	let { children } = $props();
 
 	let renderNavbar = $state(false);
 
 	onMount(() => {
+		initializeTelemetry();
+
 		page.subscribe(page => {
 			const pagePath = page.url.pathname;
 			renderNavbar = !navbarExeluded.includes(pagePath);

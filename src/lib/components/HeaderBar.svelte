@@ -3,10 +3,9 @@
     import Icon from "@iconify/svelte";
 	import AuthService from "$lib/features/auth/AuthService";
 	import { goto } from "$app/navigation";
-	import ThemeController from "$lib/controllers/theme/ThemeController";
+	import ThemeController from "$lib/controllers/theme/ThemeController.svelte";
 
-    let isDark = $state(false);
-    let themeController = $state(ThemeController.getInstance());
+    let themeController = $state<ThemeController | null>(null);
 
     onMount(() => {
         themeController = ThemeController.getInstance();
@@ -39,8 +38,8 @@
             <Icon icon="mynaui:user" />
         </button>
 
-        <button class="side-button" onclick={themeController.toggleTheme}>
-            {#if isDark} 
+        <button class="side-button" onclick={() => themeController?.toggleTheme()}>
+            {#if themeController?.isDark} 
             <Icon icon="mynaui:sun" /> 
             {:else} 
             <Icon icon="mynaui:moon" /> 

@@ -1,6 +1,8 @@
+import { logger } from "$lib/utils/observe/telemetry";
+
 export default class ThemeController {
 
-    private _isDark: boolean;
+    private _isDark = $state<boolean>(false);
 
     private static instance: ThemeController;
 
@@ -23,9 +25,11 @@ export default class ThemeController {
         if (isDark) {
             document.documentElement.classList.add('dark');
             localStorage.setItem('theme', 'dark');
+            logger.trace("Dark mode enabled");
         } else {
             document.documentElement.classList.remove('dark');
             localStorage.setItem('theme', 'light');
+            logger.trace("Light mode enabled");
         }
 
         this._isDark = isDark;
