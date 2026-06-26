@@ -5,6 +5,7 @@
     <h2 class="text-xl font-semibold">Pages</h2>
     <ul class="mt-2">
         <li><a href="/preview/user-profile">User Profile</a></li>
+        <li><a href="/preview/repo-profile">Repo Profile</a></li>
     </ul>
 </section>
 
