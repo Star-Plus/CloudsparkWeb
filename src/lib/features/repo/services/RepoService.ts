@@ -2,6 +2,7 @@ import { Mockable } from "$lib/utils/mock/Mockable";
 import type { AxiosInstance } from "axios";
 import RepoPropsDto, { type RepoPropsPayload } from "../dtos/RepoPropsDto";
 import RepoVcsMetadataDto, { type RepoVcsMetadata } from "../dtos/RepoVcsMetadataDto";
+import RepoContentDto, { type RepoContent } from "../dtos/RepoContentDto";
 
 export default class RepoService extends Mockable {
     private api : AxiosInstance
@@ -26,6 +27,18 @@ export default class RepoService extends Mockable {
         const dto = new RepoVcsMetadataDto();
         try {
             const resp = await this.api.get<RepoVcsMetadata>(`/repo/${username}/${repoName}/vcs-metadata`);
+            dto.setPayload(resp.data);
+        }
+        catch (err) {
+            dto.setError(err as Error);
+        }
+        return dto;
+    }
+
+    async getRepoContent(username: string, repoName: string, path: string) : Promise<RepoContentDto> {
+        const dto = new RepoContentDto();
+        try {
+            const resp = await this.api.get<RepoContent>(`/repo/${username}/${repoName}/tree/${path}`);
             dto.setPayload(resp.data);
         }
         catch (err) {
@@ -59,6 +72,41 @@ export default class RepoService extends Mockable {
                 {name: "feature", commitCount: Math.floor(Math.random() * 100)},
             ],
         });    
+        return dto;
+    }
+
+    async mock_getRepoContent(_: string, __: string, ___: string) : Promise<RepoContentDto> {
+        const dto = new RepoContentDto();
+        dto.setPayload(<RepoContent>{
+            assets: [
+                {
+                    name: "concept1",
+                    previewUrl: "https://images.unsplash.com/photo-1779243829348-85bf26cff23b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDE1fENEd3V3WEpBYkV3fHxlbnwwfHx8fHw%3D",
+                    size: 1,
+                    type: "image/png"
+                },
+                {
+                    name: "concept2",
+                    previewUrl: "https://images.unsplash.com/photo-1779878603870-dad73869e4dc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDI0fENEd3V3WEpBYkV3fHxlbnwwfHx8fHw%3D",
+                    size: 1,
+                    type: "image/png"
+                },
+                {
+                    name: "concept3",
+                    previewUrl: "https://images.unsplash.com/photo-1777971636631-ec8b991f608d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDg2fENEd3V3WEpBYkV3fHxlbnwwfHx8fHw%3D",
+                    size: 2,
+                    type: "image/png"
+                },
+                {
+                    name: "models",
+                    type: "DIR"
+                },
+                {
+                    name: "assets",
+                    type: "DIR"
+                }
+            ]
+        })
         return dto;
     }
 }

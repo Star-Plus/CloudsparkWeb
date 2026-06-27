@@ -1,10 +1,15 @@
 import BaseDTO from "$lib/utils/models/BaseDTO"
 
-export type RepoContent = {
+export type AssetWindow = {
     name: string,
-    previewUrl: string,
-    size: number,
-    type: string
+    previewUrl?: string,
+    size?: number,
+    type: string,
+    metadata?: Map<string, any>
+}
+
+export type RepoContent = {
+    assets: AssetWindow[]
 }
 
 export default class RepoContentDto extends BaseDTO<RepoContent> {}
