@@ -1,6 +1,7 @@
 import { Mockable } from "$lib/utils/mock/Mockable";
 import type { AxiosInstance } from "axios";
 import RepoPropsDto, { type RepoPropsPayload } from "../dtos/RepoPropsDto";
+import RepoVcsMetadataDto, { type RepoVcsMetadata } from "../dtos/RepoVcsMetadataDto";
 
 export default class RepoService extends Mockable {
     private api : AxiosInstance
@@ -19,7 +20,19 @@ export default class RepoService extends Mockable {
             dto.setError(err as Error);
         }
         return dto;
-    }  
+    }
+
+    async getRepoVcsMetadata(username: string, repoName: string) : Promise<RepoVcsMetadataDto> {
+        const dto = new RepoVcsMetadataDto();
+        try {
+            const resp = await this.api.get<RepoVcsMetadata>(`/repo/${username}/${repoName}/vcs-metadata`);
+            dto.setPayload(resp.data);
+        }
+        catch (err) {
+            dto.setError(err as Error);
+        }
+        return dto;
+    }
     
     async mock_getRepoProps(_: string, __: string) : Promise<RepoPropsDto> {
         const dto = new RepoPropsDto();
@@ -33,6 +46,18 @@ export default class RepoService extends Mockable {
             collaborators: [{avatarUrl: "avatarUrl", name: "collaborator"}],
             createdAt: new Date(),
             url: "http://eulercore.com/owner/name"
+        });    
+        return dto;
+    }
+
+    async mock_getRepoVcsMetadata(_: string, __: string) : Promise<RepoVcsMetadataDto> {
+        const dto = new RepoVcsMetadataDto();
+        dto.setPayload(<RepoVcsMetadata>{
+            branches: [
+                {name: "main", commitCount: Math.floor(Math.random() * 100)},
+                {name: "dev", commitCount: Math.floor(Math.random() * 100)},
+                {name: "feature", commitCount: Math.floor(Math.random() * 100)},
+            ],
         });    
         return dto;
     }

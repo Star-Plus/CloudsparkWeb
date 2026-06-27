@@ -27,7 +27,7 @@
 
 <ThemeContext />
 
-<main class="min-h-screen bg-background-50">
+<main class="min-h-screen bg-background-100">
 
 	{#if renderNavbar}
 		<div class="sticky top-0 left-0 z-10 bg-background-50 border-b border-background-300 py-4 px-6">
