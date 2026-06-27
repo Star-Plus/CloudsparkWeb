@@ -7,7 +7,7 @@
 	let properties = $derived(repoProps.state == TransferState.SUCCESS ? repoProps.payload : null);
 </script>
 
-<div class="sticky top-6 space-y-4 rounded-3xl border border-background-300 bg-background-100/70 p-5 shadow-sm">
+<div class="sticky top-6 space-y-4 border-l border-background-300 pl-6 h-full">
 	<div class="space-y-1">
 		<p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary-800">Explorer</p>
 		<p class="text-sm leading-6 text-text-700">Quick access to the most relevant repository metadata.</p>
