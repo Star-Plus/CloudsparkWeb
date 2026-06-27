@@ -62,13 +62,13 @@
 	</div>
 
 	{#if sortedAssets?.length}
-		<div class="columns-4 gap-2 md:grid-cols-2 xl:grid-cols-4">
+		<div class="columns-4 gap-3 md:grid-cols-2 xl:grid-cols-4">
 			{#each sortedAssets as asset}
-				<div class="rounded-2xl shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+				<div class="rounded-2xl shadow-sm mb-3 transition hover:-translate-y-0.5 hover:shadow-md">
 					{#if asset.type === "DIR"}
 						<button
 							onclick={() => changePath(buildPath(asset.name))}
-							class="flex h-full min-h-28 w-full flex-col items-start justify-between rounded-xl border border-transparent bg-primary-600/90 p-4 text-left text-neutral-50 transition hover:bg-primary-500"
+							class="flex h-full w-full flex-col items-start bg-background-300/30 justify-between gap-2 border-b border-primary-600 p-4 text-left text-neutral-50 transition hover:bg-primary-500"
 						>
 							<div class="flex items-center gap-2">
 								<Icon icon="fluent:folder-20-filled" class="text-xl" />
