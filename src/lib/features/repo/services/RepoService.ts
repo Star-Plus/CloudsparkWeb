@@ -56,7 +56,10 @@ export default class RepoService extends Mockable {
             description: "This is a description. Write anything you want. And we will take care of the rest.",
             private: Math.random() >= 0.5 ? true : false,
             size: 1,
-            collaborators: [{avatarUrl: "avatarUrl", name: "collaborator"}],
+            collaborators: [
+                {avatarUrl: "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHVzZXJzfGVufDB8fDB8fHww", name: "collaborator"}, 
+                {avatarUrl: "https://images.unsplash.com/photo-1739242572316-c6a4d7199087?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTF8fHVzZXJzfGVufDB8fDB8fHww", name: "21"}
+            ],
             createdAt: new Date(),
             url: "http://eulercore.com/owner/name"
         });    
