@@ -25,27 +25,48 @@ export default class DriveStorageService extends Mockable {
     async mock_fetchPathContents(path: string) : Promise<PathObjectDto> {
         const dto = new PathObjectDto();
 
-        if (path == "aejkatappaja/vault") {
+        if (path == "aejkatappaja") {
             dto.setPayload(<DirObject>{
                 name: "root",
                 path: "/",
-                contents: [{
-                    name: "test",
-                    path: "/test",
-                    type: "dir",
-                }],
-                count: 2
+                contents: [
+                    {
+                        name: "vault",
+                        path: "/vault",
+                        type: "dir",
+                    },
+                    {
+                        name: "shared",
+                        path: "/shared",
+                        type: "dir",
+                    },
+                ],
+                count: 4
             });
-        } else if (path == "aejkatappaja/vault/test") {
+        } else if (path == "aejkatappaja/vault") {
             dto.setPayload(<DirObject>{
-                name: "test",
-                path: "/test",
+                name: "vault",
+                path: "/vault",
                 contents: [{
                     name: "final",
-                    path: "/test/final",
+                    path: "/vault/final",
                     type: "file",
                 }],
                 count: 1
+            });
+        }
+        else if (path == "aejkatappaja/shared") {
+            dto.setPayload(<DirObject>{
+                name: "shared",
+                path: "/shared",
+                contents: [
+                    {
+                        name: "final",
+                        path: "/shared/final",
+                        type: "file",
+                    },
+                ],
+                count: 0
             });
         }
         else throw new Error(`Path not found: ${path}`);

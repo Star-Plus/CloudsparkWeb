@@ -8,7 +8,7 @@
 	import type AuthService from "$lib/features/auth/AuthService";
 	import VisitedPaths from "../stores/VisitedPaths.svelte";
 	import MiniFileExplorer from "../ui/MiniFileExplorer.svelte";
-    import path from "path-browserify";
+	import FileExplorer from "../ui/FileExplorer.svelte";
     
     let {creditService, driveStorageService, authService} : 
     {creditService: CreditService, driveStorageService: DriveStorageService, authService: AuthService} = $props();
@@ -20,23 +20,20 @@
 
     onMount(() => {
         creditService.fetchCredits("aejkatappaja").then((dto) => (creditsInfo = dto));
-        driveStorageService.fetchPathContents(`${user?.username}/vault`).then((dto) => {
+        driveStorageService.fetchPathContents(`${user?.username}`).then((dto) => {
             rootSelfPathContens = dto;
             VisitedPaths.getInstance().expand(dto.payload!);
         });
     })
 
-    async function expandPath(nestedPath: string) : Promise<DirObject> {
-        const cached = VisitedPaths.getInstance().getPathObject(nestedPath);
+    async function openPath(subpath: string) : Promise<DirObject> {
+        const cached = VisitedPaths.getInstance().getPathObject(subpath);
         if (cached) return cached;
 
-        const jointPath = path.join(`${user?.username}/vault`, nestedPath);
-
-        let resp = await driveStorageService.fetchPathContents(jointPath);
+        let resp = await driveStorageService.fetchPathContents(`${user?.username}${subpath}`);
         if (resp.error) throw resp.error;
 
         VisitedPaths.getInstance().expand(resp.payload!);
-
         return resp.payload!;
     }
 
@@ -45,12 +42,12 @@
     <aside class="w-fit h-full border-r border-neutral-300 px-6 pt-8 bg-background-100">
         <DriveSidebar {creditsInfo} >
         {#if rootSelfPathContens.payload}
-            <MiniFileExplorer root={rootSelfPathContens.payload!} expandPath={expandPath} />
+            <MiniFileExplorer root={rootSelfPathContens.payload!} expandPath={openPath} />
         {/if}
         </DriveSidebar>
     </aside>
 
-    <div class="h-full flex-1">
-        
+    <div class="h-full flex-1 p-8">
+        <FileExplorer openFolder={openPath} />
     </div>
 </div>

@@ -27,7 +27,7 @@
 
 <ThemeContext />
 
-<main class="h-screen bg-background-50 flex flex-col">
+<main class="h-screen bg-background-50 flex flex-col overflow-auto">
 
 	{#if renderNavbar}
 		<div class="sticky top-0 left-0 z-10 bg-background-50 border-b border-background-300 py-4 px-6">

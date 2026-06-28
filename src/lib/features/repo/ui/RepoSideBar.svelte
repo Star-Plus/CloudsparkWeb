@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { TransferState } from "$lib/utils/models/BaseDTO";
+	import { TransferState } from "$lib/utils/models/BaseDTO.svelte";
 	import Icon from "@iconify/svelte";
 	import type RepoPropsDto from "../dtos/RepoPropsDto";
 

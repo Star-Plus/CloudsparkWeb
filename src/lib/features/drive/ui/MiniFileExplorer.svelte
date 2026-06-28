@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Icon from "@iconify/svelte";
     import type {DirObject} from "../dtos/DirObject";
 	import { onMount } from "svelte";
 	import TreeFileNode from "./TreeFileNode.svelte";
@@ -18,21 +17,9 @@
 </script>
 
 <div>
-    <button
-        class="flex items-center gap-1 w-full font-semibold text-lg py-0.5 rounded hover:bg-muted mb-1"
-        onclick={() => (rootExpanded = !rootExpanded)}
-    >
-        <Icon
-            icon={rootExpanded
-                ? "material-symbols:expand-more-rounded"
-                : "material-symbols:chevron-right-rounded"}
-        />
-        All Files
-    </button>
-
     {#if rootExpanded && root?.contents}
         {#each root.contents as child (child.path)}
-            <TreeFileNode node={child} {expandPath} depth={1} />
+            <TreeFileNode node={child} {expandPath} depth={0} />
         {/each}
     {/if}
 </div>

@@ -2,7 +2,7 @@
     import Icon from "@iconify/svelte";
 	import type UserProfileResponse from "../services/dtos/UserProfileResponse";
 	import type { UserProfilePayload } from "../services/dtos/UserProfileResponse";
-	import { TransferState } from "$lib/utils/models/BaseDTO";
+	import { TransferState } from "$lib/utils/models/BaseDTO.svelte";
 	import "@aejkatappaja/phantom-ui";
 
     let {userProfileResponse} : {userProfileResponse: UserProfileResponse} = $props();

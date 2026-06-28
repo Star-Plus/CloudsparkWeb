@@ -1,4 +1,4 @@
-import BaseDTO from "$lib/utils/models/BaseDTO"
+import BaseDTO from "$lib/utils/models/BaseDTO.svelte"
 
 export type AssetWindow = {
     name: string,

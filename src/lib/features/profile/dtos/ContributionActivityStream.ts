@@ -1,5 +1,5 @@
 import type { Commit } from "$lib/features/commits/types/Commit";
-import BaseDTO from "$lib/utils/models/BaseDTO";
+import BaseDTO from "$lib/utils/models/BaseDTO.svelte";
 
 export type ActivityStreamPayload = {
     page: number,

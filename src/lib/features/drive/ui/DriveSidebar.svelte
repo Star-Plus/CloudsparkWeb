@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from "@iconify/svelte";
 	import type { CreditsInfoDto } from "../dtos/CreditsInfo";
-	import { TransferState } from "$lib/utils/models/BaseDTO";
+	import { TransferState } from "$lib/utils/models/BaseDTO.svelte";
 
     let {creditsInfo, children} : 
     {creditsInfo: CreditsInfoDto, children: any} = $props();
@@ -40,7 +40,7 @@
         <a href="/privacy">Privacy Policy</a>
         <a href="/terms">Terms of Use</a>
 
-        <p class="text-text-900 font-normal border-t-2 pt-2 border-neutral-600">Copyright © {new Date().getFullYear()} All Rights Reserved </p>
+        <p class="text-text-900 font-medium border-t-2 pt-2 border-neutral-600">Copyright © {new Date().getFullYear()} All Rights Reserved </p>
     </section>
     
 </div>

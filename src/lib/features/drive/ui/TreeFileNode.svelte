@@ -39,25 +39,41 @@
 </script>
 
 <div style="padding-left: {depth * 1}rem">
-    <button class="flex items-center gap-1 w-full hover:bg-muted rounded px-1 py-0.5 text-md" onclick={toggle}>
+    <div class="flex items-center gap-1 w-full hover:bg-muted rounded px-1 py-0.5 text-md">
         {#if isDir}
+        
             {#if loading}
                 <Icon icon="material-symbols:progress-activity" class="animate-spin text-sm" />
             {:else}
-                <Icon
-                    icon={expanded
-                        ? "material-symbols:expand-more-rounded"
-                        : "material-symbols:chevron-right-rounded"}
-                />
+                <button onclick={toggle}>
+                    <Icon
+                        icon={expanded
+                            ? "material-symbols:expand-more-rounded"
+                            : "material-symbols:chevron-right-rounded"}
+                    />
+                </button>
             {/if}
-            <Icon icon="fluent:folder-20-filled" class="text-primary-500 text-lg" />
+            <!-- Special Folders -->
+            {#if node.path == "/vault"}
+                <Icon icon="fluent:lock-closed-16-filled" class="text-secondary-500 text-2xl" />
+            {:else if node.path == "/shared"}
+                <Icon icon="fluent:folder-people-24-filled" class="text-secondary-500 text-2xl" />
+            {:else}
+                <Icon icon="fluent:folder-20-filled" class="text-primary-500 text-lg" />
+            {/if}
+            
         {:else}
             <!-- svelte-ignore element_invalid_self_closing_tag -->
             <span class="w-4" /> <!-- spacer to align with folders -->
-            <Icon icon="fluent:document-20-filled" class="text-secondary-600 text-lg" />
+            <Icon icon="fluent:document-20-filled" class="text-background-800 text-lg" />
         {/if}
+
+        {#if node.path == "/vault" || node.path == "/shared" || node.path == "/"}
+        <span class="truncate text-lg font-medium">{node.name}</span>
+        {:else}
         <span class="truncate">{node.name}</span>
-    </button>
+        {/if}
+    </div>
 
     {#if expanded && children.length > 0}
         {#each children as child (child.path)}

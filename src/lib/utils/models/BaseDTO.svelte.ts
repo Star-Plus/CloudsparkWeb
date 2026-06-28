@@ -7,8 +7,8 @@ export const enum TransferState {
 }
 
 export default class DTO<TPayload> extends Stateful<TransferState> {
-    protected _error: Error | null = null;
-    protected _payload: TPayload | null = null;
+    protected _error = $state<Error | null>(null)
+    protected _payload = $state<TPayload | null>(null)
 
     constructor() {
         super(TransferState.LOADING);

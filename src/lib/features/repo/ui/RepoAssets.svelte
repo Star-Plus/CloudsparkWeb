@@ -2,7 +2,7 @@
 	import Icon from "@iconify/svelte";
 	import AssetWindowPreview from "./AssetWindowPreview.svelte";
 	import type RepoContentDto from "../dtos/RepoContentDto";
-	import { TransferState } from "$lib/utils/models/BaseDTO";
+	import { TransferState } from "$lib/utils/models/BaseDTO.svelte";
 
 	let { repoAssets, currentPath, changePath }: {
 		repoAssets: RepoContentDto;
