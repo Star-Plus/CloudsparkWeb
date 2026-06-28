@@ -42,11 +42,15 @@
 
 </script>
 <div class="h-full flex">
-    <aside class="w-fit h-full border-r border-neutral-300 pr-6 pt-8">
+    <aside class="w-fit h-full border-r border-neutral-300 px-6 pt-8 bg-background-100">
         <DriveSidebar {creditsInfo} >
         {#if rootSelfPathContens.payload}
             <MiniFileExplorer root={rootSelfPathContens.payload!} expandPath={expandPath} />
         {/if}
         </DriveSidebar>
     </aside>
+
+    <div class="h-full flex-1">
+        
+    </div>
 </div>

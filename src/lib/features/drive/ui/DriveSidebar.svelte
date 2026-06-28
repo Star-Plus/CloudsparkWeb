@@ -13,7 +13,7 @@
 
 </script>
 
-<div class="flex flex-col gap-6 h-full">
+<div class="flex flex-col gap-6 h-full bg-background-100">
     <div class="flex items-center">
         <div class="flex gap-2 items-center">
             <Icon icon="fluent:cloud-20-filled" class="text-xl" />
