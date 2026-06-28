@@ -6,6 +6,7 @@
     <ul class="mt-2">
         <li><a href="/preview/user-profile">User Profile</a></li>
         <li><a href="/preview/repo-profile">Repo Profile</a></li>
+        <li><a href="/preview/drive">Drive</a></li>
     </ul>
 </section>
 

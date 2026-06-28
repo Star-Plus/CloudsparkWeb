@@ -1,32 +1,29 @@
-import appApi from "$lib/utils/apis/appApi";
+import { Mockable } from "$lib/utils/mock/Mockable";
+import type { AxiosInstance } from "axios";
 import type LoginResponse from "./dtos/LoginResponse";
 import User from "./User.model";
+import { browser } from "$app/environment";
 
-export default class AuthService {
-
-    static instance: AuthService;
+export default class AuthService extends Mockable {
     
     private user: User | null = null;
+    private api: AxiosInstance;
 
-    static getInstance() {
-        if (!AuthService.instance) {
-            AuthService.instance = new AuthService();
-        }
-        return AuthService.instance;
-    }
-
-    private constructor() {
+    constructor(api: AxiosInstance) {
+        super();
+        this.api = api;
         // On initialization, check if we have credentials in localStorage
-        const token = localStorage.getItem("token");
-        const username = localStorage.getItem("username");
-        const userId = localStorage.getItem("userId");
-
-        if (token && username && userId) {
-            this.user = new User({
-                id: userId,
-                username,
-                token
-            });
+        if (browser) {
+            const token = localStorage.getItem("token");
+            const username = localStorage.getItem("username");
+            const userId = localStorage.getItem("userId");
+            if (token && username && userId) {
+                this.user = new User({
+                    id: userId,
+                    username,
+                    token
+                });
+            }
         }
     }
 
@@ -46,10 +43,18 @@ export default class AuthService {
         return this.user;
     }
 
+    mock_getUser(): User | null {
+        return new User({
+            id: "aejkatappaja",
+            username: "aejkatappaja",
+            token: "aejkatappaja"
+        })
+    }
+
     async googleSignIn(idToken: string) : Promise<LoginResponse> {
         try {
             // Fire off the secure token exchange
-            const response = await appApi.post<LoginResponse>("/auth/google", {
+            const response = await this.api.post<LoginResponse>("/auth/google", {
                 idToken
             });
             

@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
 	import AuthService from "$lib/features/auth/AuthService";
+	import appApi from "$lib/utils/apis/appApi";
 
     // Track state to show a humanized error message if needed
     let isAuthenticating = $state(true);
@@ -31,7 +32,7 @@
         console.log("Confirmed Google Auth Hash. Exchanging with backend...");
         
         try {
-            const authService = AuthService.getInstance();
+            const authService = new AuthService(appApi);
             const resp = await authService.googleSignIn(idToken);
 
             const redirectUrl = sessionStorage.getItem("auth_redirect") || "/";

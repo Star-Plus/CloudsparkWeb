@@ -25,6 +25,7 @@
 		"@sveltejs/vite-plugin-svelte": "^6.2.4",
 		"@tailwindcss/vite": "^4.1.18",
 		"@types/node": "^22",
+		"@types/path-browserify": "^1.0.3",
 		"eslint": "^10.0.3",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.15.2",
@@ -53,6 +54,7 @@
 		"@opentelemetry/sdk-logs": "^0.219.0",
 		"@opentelemetry/sdk-trace-web": "^2.8.0",
 		"axios": "^1.15.0",
-		"color-alchemy": "^1.0.0"
+		"color-alchemy": "^1.0.0",
+		"path-browserify": "^1.0.1"
 	}
 }
