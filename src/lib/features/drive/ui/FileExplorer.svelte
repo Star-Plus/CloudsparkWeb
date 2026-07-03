@@ -44,6 +44,9 @@
                     <Icon icon="fluent:arrow-left-12-regular" class="text-primary-500" />
                 </button>
             {/if}
+            <span class="font-medium">
+            All files 
+            </span>
             {root.payload?.path}
         </caption>
         <thead>
