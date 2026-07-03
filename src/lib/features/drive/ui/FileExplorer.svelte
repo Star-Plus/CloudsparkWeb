@@ -4,9 +4,14 @@
 	import { page } from "$app/state";
 	import { goto } from "$app/navigation";
 	import FileIconSelector from "./FileIconSelector.svelte";
+	import UvPreviewer from "$lib/features/ultraviolet/ui/UvPreviewer.svelte";
+	import AuthService from "$lib/features/auth/AuthService";
+	import appApi from "$lib/utils/apis/appApi";
+	import { getAuthContext } from "$lib/features/auth/AuthContext.svelte";
 
     let { openFolder } : { openFolder: (path: string) => Promise<DirObject> } = $props();
 
+    let owner = $derived(page.url.searchParams.get("owner") || "");
     let subPathQuery = $derived(page.url.searchParams.get("path") || "");
     let root = $state<PathObjectDto>(new PathObjectDto());
 
@@ -16,7 +21,21 @@
         })
     })
 
+    const authService = getAuthContext().service;
+
     async function handleOpenFile(dir: DirObject) {
+
+        let user = owner;
+
+        if (user == "") {
+            const username = authService.getUser()?.username;
+            if (!username) {
+                throw new Error("No owner of the drive is specified");
+            }
+
+            user = username;
+        }
+
         if (dir.type === "dir") {
             const newParams = new URLSearchParams(page.url.searchParams);
             newParams.set("path", dir.path);
@@ -24,6 +43,8 @@
         }
         else {
             // TODO: Open file
+            console.log("Opening file", dir);
+            fileToPreview = `${user}/${dir.path}/${dir.version}/${dir.type.split("/")[0]}`;
         }
     }
 
@@ -31,10 +52,11 @@
         history.back();
     }
 
+    let fileToPreview = $state<string | null>(null)
+
 </script>
 
 <div class="w-full">
-    
     
     {#if root.payload?.contents}
     <table class="felx flex-col gap-3 container w-full">
@@ -82,8 +104,17 @@
         </tbody>
     </table>
     {/if}
+
+    {#if fileToPreview}
+    <div class="absolute w-full h-full bg-neutral-950/70 top-0 left-0 p-30 overflow-y-auto">
+        <UvPreviewer assetPath={fileToPreview} isMock={authService.isMock()} />
+    </div>
+    {/if}
     
+
 </div>
+
+
 
 <style>
     thead > tr > th {

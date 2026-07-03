@@ -3,4 +3,5 @@ export type CloudFile = {
     path: string;
     size: number;
     type: string;
+    version: string;
 }
