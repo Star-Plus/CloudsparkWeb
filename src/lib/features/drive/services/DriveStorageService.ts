@@ -1,6 +1,8 @@
 import { Mockable } from "$lib/utils/mock/Mockable";
 import type { AxiosInstance } from "axios";
 import { PathObjectDto, type DirObject } from "../dtos/DirObject";
+import type { ShareVaultObjectRequest } from "../dtos/ShareVaultObjectRequest";
+import { ShareVaultObjectResponse } from "../dtos/ShareVaultObjectResponse";
 
 export default class DriveStorageService extends Mockable {
     private api: AxiosInstance;
@@ -13,12 +15,25 @@ export default class DriveStorageService extends Mockable {
     async fetchPathContents(path: string) : Promise<PathObjectDto> {
         const dto = new PathObjectDto();
         try {
-            const resp = await this.api.get<DirObject>(`/tree/${path}`);
+            const resp = await this.api.get<DirObject>(`/drive/${path}`);
             dto.setPayload(resp.data);
         }
         catch (err) {
             dto.setError(err as Error);
         }
+        return dto;
+    }
+
+    async shareObject(object: ShareVaultObjectRequest) : Promise<ShareVaultObjectResponse> {
+        const dto = new ShareVaultObjectResponse();
+        try {
+            const resp = await this.api.post(`/drive/share/${object.payload?.objectPath}`, object.payload);
+            dto.setPayload(resp.data);
+        }
+        catch (err) {
+            dto.setError(err as Error);
+        }
+
         return dto;
     }
 
@@ -71,6 +86,12 @@ export default class DriveStorageService extends Mockable {
         }
         else throw new Error(`Path not found: ${path}`);
 
+        return dto;
+    }
+
+    async mock_shareObject(object: ShareVaultObjectRequest) : Promise<ShareVaultObjectResponse> {
+        const dto = new ShareVaultObjectResponse();
+        dto.setPayload("Object shared successfully");
         return dto;
     }
 }

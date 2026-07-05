@@ -36,6 +36,12 @@
             mediaType = resp.payload.type.split("/")[0];
             previewUrl = resp.payload.url;
         })
+
+        window.addEventListener("mousedown", (e: MouseEvent) => {
+            if (!container.contains(e.target as Node)) {
+                onClickOutside();
+            }
+        })
     })
 
     function deductWidth() : number {

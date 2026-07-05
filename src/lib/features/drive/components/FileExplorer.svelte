@@ -3,11 +3,10 @@
 	import { PathObjectDto, type DirObject } from "../dtos/DirObject";
 	import { page } from "$app/state";
 	import { goto } from "$app/navigation";
-	import FileIconSelector from "./FileIconSelector.svelte";
+	import FileIconSelector from "../ui/FileIconSelector.svelte";
 	import UvPreviewer from "$lib/features/ultraviolet/ui/UvPreviewer.svelte";
-	import AuthService from "$lib/features/auth/AuthService";
-	import appApi from "$lib/utils/apis/appApi";
 	import { getAuthContext } from "$lib/features/auth/AuthContext.svelte";
+	import ShareButton from "./ShareButton.svelte";
 
     let { openFolder } : { openFolder: (path: string) => Promise<DirObject> } = $props();
 
@@ -22,20 +21,9 @@
     })
 
     const authService = getAuthContext().service;
+    let user = $derived(owner || authService.getUser()?.username || "");
 
     async function handleOpenFile(dir: DirObject) {
-
-        let user = owner;
-
-        if (user == "") {
-            const username = authService.getUser()?.username;
-            if (!username) {
-                throw new Error("No owner of the drive is specified");
-            }
-
-            user = username;
-        }
-
         if (dir.type === "dir") {
             const newParams = new URLSearchParams(page.url.searchParams);
             newParams.set("path", dir.path);
@@ -75,6 +63,7 @@
             <tr class="text-left text-text-950/60">
                 <th>Name</th>
                 <th>Type</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -98,6 +87,10 @@
                     {:else}
                     <span>File</span>
                 {/if}
+            </td>
+
+            <td>
+                <ShareButton objectPath={`${user}${child.path}`} />
             </td>
         </tr>
         {/each}

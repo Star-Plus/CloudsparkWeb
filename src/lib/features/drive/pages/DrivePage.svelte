@@ -4,14 +4,17 @@
 	import type CreditService from "../services/CreditService";
 	import DriveSidebar from "../ui/DriveSidebar.svelte";
 	import { PathObjectDto, type DirObject } from "../dtos/DirObject";
-	import type DriveStorageService from "../services/DriveStorageService";
-	import type AuthService from "$lib/features/auth/AuthService";
 	import VisitedPaths from "../stores/VisitedPaths.svelte";
 	import MiniFileExplorer from "../ui/MiniFileExplorer.svelte";
-	import FileExplorer from "../ui/FileExplorer.svelte";
+	import FileExplorer from "../components/FileExplorer.svelte";
+	import { getDriveStorageContext } from "../contexts/DriveStorageContext.svelte";
+	import { getAuthContext } from "$lib/features/auth/AuthContext.svelte";
     
-    let {creditService, driveStorageService, authService} : 
-    {creditService: CreditService, driveStorageService: DriveStorageService, authService: AuthService} = $props();
+    let {creditService} : 
+    {creditService: CreditService} = $props();
+
+    const driveStorageService = getDriveStorageContext().service;
+    const authService = getAuthContext().service;
 
     let creditsInfo = $state<CreditsInfoDto>(new CreditsInfoDto());
     let rootSelfPathContens = $state<PathObjectDto>(new PathObjectDto());
