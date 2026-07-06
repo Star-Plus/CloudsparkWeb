@@ -1,5 +1,23 @@
 sequenceDiagram
+    participant TaskManager
+    participant UIController
     participant UploadAgent
     participant VcsLocalServer
 
+    UIController ->> UploadAgent: Pass target filepath
+
+    UploadAgent ->>+ VcsLocalServer: /upload?filepath=<wantedFile>
+    VcsLocalServer ->>- UploadAgent: Confirm upload intent
+
+    UploadAgent ->>+ VcsLocalServer: Establish web socket
+    VcsLocalServer ->>- UploadAgent: Web socket established
+
+    alt Streaming upload status via websocket
+
+    VcsLocalServer -) UploadAgent: Upload State
+    UploadAgent -) TaskManager: Update Upload State
+    
+    end
+
+    UIController --> TaskManager: Render task state
     
