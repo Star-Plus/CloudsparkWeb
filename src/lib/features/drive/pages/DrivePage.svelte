@@ -22,18 +22,19 @@
     let user = $derived(authService.getUser());
 
     onMount(() => {
-        creditService.fetchCredits("aejkatappaja").then((dto) => (creditsInfo = dto));
-        driveStorageService.fetchPathContents(`${user?.username}`).then((dto) => {
-            rootSelfPathContens = dto;
-            VisitedPaths.getInstance().expand(dto.payload!);
+        creditService.fetchCredits(`${user?.username}`).then((dto) => (creditsInfo = dto));
+        openPath(`${user?.username}`).then((dto) => {
+            rootSelfPathContens.setPayload(dto);
         });
     })
 
-    async function openPath(subpath: string) : Promise<DirObject> {
-        const cached = VisitedPaths.getInstance().getPathObject(subpath);
+    async function openPath(path: string) : Promise<DirObject> {
+        if (path == "/" || path == "") path = `${user?.username}`;
+
+        const cached = VisitedPaths.getInstance().getPathObject(path);
         if (cached) return cached;
 
-        let resp = await driveStorageService.fetchPathContents(`${user?.username}${subpath}`);
+        let resp = await driveStorageService.fetchPathContents(`${path}`);
         if (resp.error) throw resp.error;
 
         VisitedPaths.getInstance().expand(resp.payload!);

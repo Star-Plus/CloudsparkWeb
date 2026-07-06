@@ -5,27 +5,33 @@
 	import appApi from "$lib/utils/apis/appApi";
 	import { useMock } from "$lib/utils/mock/useMock";
     import type { AxiosInstance } from "axios";
+	import TextBook from "../players/TextBook.svelte";
 
     let {
         apiSource = appApi,
         isMock=false, 
         assetPath,
+        mediaType,
         onClickOutside = () => {}
     } : {
         apiSource?: AxiosInstance, 
         assetPath: string, 
         isMock?: boolean,
+        mediaType?: string,
         onClickOutside?: () => void
     } = $props();
 
     let container: HTMLDivElement;
 
-    let mediaType = $state<string>("");
     const uvService = $derived<UltraVioletService>(isMock ? useMock(new UltraVioletService(apiSource)) : new UltraVioletService(apiSource));
     
     let previewUrl = $state<string>("");
 
     onMount(() => {
+
+        if (!mediaType) {
+            mediaType = assetPath.split("/").pop();
+        }
 
         if (mediaType == "image") {
             assetPath += "?width=" + deductWidth();
@@ -33,8 +39,8 @@
 
         uvService.fetchFastPreviewUrl(assetPath).then((resp) => {
             if (resp.payload === null) return;
-            mediaType = resp.payload.type.split("/")[0];
-            previewUrl = resp.payload.url;
+            previewUrl = resp.payload.previewUrl;
+            console.log(previewUrl)
         })
 
         window.addEventListener("mousedown", (e: MouseEvent) => {
@@ -55,5 +61,9 @@
 <div bind:this={container} class="max-w-full h-full">
     {#if mediaType == "image"}
     <ImageScreen imageUrl={previewUrl} />
+    {:else if mediaType == "text"}
+    <TextBook fileUrl={previewUrl} />
+    {:else}
+        <p class="text-center text-text-600">Unsupported media "{mediaType}" type</p>
     {/if}
 </div>

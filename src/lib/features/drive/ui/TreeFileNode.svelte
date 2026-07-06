@@ -14,7 +14,7 @@
     let loading = $state(false);
 
     // svelte-ignore state_referenced_locally
-    const isDir = node.type === "dir";
+    const isDir = node.type === "folder";
 
     async function toggle() {
         if (!isDir) return;
