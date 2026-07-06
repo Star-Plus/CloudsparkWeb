@@ -6,8 +6,25 @@ sequenceDiagram
 
     UIController ->> UploadAgent: Pass target filepath
 
-    UploadAgent ->>+ VcsLocalServer: /upload?filepath=<wantedFile>
-    VcsLocalServer ->>- UploadAgent: Confirm upload intent
+    UploadAgent ->>+ VcsLocalServer: Check if {owner}/{repo} exists on local fs
+    VcsLocalServer ->>- UploadAgent: repo status
+
+    alt Repository not found
+    UploadAgent ->>+ VcsLocalServer: /initialize/repository/appData/repos/{owner}/{repo}
+    VcsLocalServer ->>- UploadAgent: Repository created
+    end
+
+    UploadAgent ->>+ VcsLocalServer: /{owner}/{repo}/ghost-stage?filepath=<wantedFile>
+    VcsLocalServer ->>- UploadAgent: Branch to push to
+
+    UploadAgent ->>+ VcsLocalServer: /{owner}/{repo}/switch/branch/{branch}?world-effects=false
+    VcsLocalServer ->>- UploadAgent: Branch switched
+
+    UploadAgent ->>+ VcsLocalServer: /{owner}/{repo}/commit
+    VcsLocalServer ->>- UploadAgent: Commited successfully
+
+    UploadAgent ->>+ VcsLocalServer: /{owner}/{repo}/push/{branch}
+    VcsLocalServer ->>- UploadAgent: Push in process
 
     UploadAgent ->>+ VcsLocalServer: Establish web socket
     VcsLocalServer ->>- UploadAgent: Web socket established
@@ -18,6 +35,19 @@ sequenceDiagram
     UploadAgent -) TaskManager: Update Upload State
     
     end
+
+    alt Push is done
+    UploadAgent ->>+ VcsLocalServer: /{owner}/{repo}/wash
+    VcsLocalServer ->>- UploadAgent: Washed latest writes
+
+    UploadAgent ->>+ VcsLocalServer: /copy?from={filepath}&to={owner}/{repo}/ready
+    
+    alt Copy is done
+    VcsLocalServer ->> UploadAgent: Close Connection
+    end
+
+    end
+    
 
     UIController --> TaskManager: Render task state
     
