@@ -48,12 +48,12 @@ export default class DriveStorageService extends Mockable {
                     {
                         name: "vault",
                         path: "/vault",
-                        type: "dir",
+                        type: "folder",
                     },
                     {
                         name: "shared",
                         path: "/shared",
-                        type: "dir",
+                        type: "folder",
                     },
                 ],
                 count: 4
