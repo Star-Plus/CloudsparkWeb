@@ -55,6 +55,7 @@
 		"@opentelemetry/sdk-trace-web": "^2.8.0",
 		"axios": "^1.15.0",
 		"color-alchemy": "^1.0.0",
+		"jest": "^30.4.2",
 		"path-browserify": "^1.0.1"
 	}
 }
