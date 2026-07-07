@@ -15,7 +15,7 @@ sequenceDiagram
     end
 
     UploadAgent ->>+ VcsLocalServer: /{owner}/{repo}/ghost-stage?filepath=<wantedFile>
-    VcsLocalServer ->>- UploadAgent: Branch to push to
+    VcsLocalServer ->>- UploadAgent: Stage done
 
     UploadAgent ->>+ VcsLocalServer: /{owner}/{repo}/switch/branch/{branch}?world-effects=false
     VcsLocalServer ->>- UploadAgent: Branch switched
