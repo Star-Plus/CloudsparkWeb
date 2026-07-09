@@ -34,7 +34,7 @@ export default class UploadAgent {
     }
 
     private async checkRepositoryAvailability(repoPath: string) : Promise<boolean> {
-        const resp = await this.api.get(`/repo/${repoPath}/exists`);
+        const resp = await this.api.get(`/exists/${repoPath}`);
         if (resp.status == 404) return false;
         if (resp.status !== 200) throw new Error(resp.data);
 
@@ -42,7 +42,7 @@ export default class UploadAgent {
     }
 
     private async createRepository(repoPath: string) {
-        const resp = await this.api.post(`/initialize/repository/appData/repos/${repoPath}`);
+        const resp = await this.api.post(`/initialize/repository/${repoPath}`);
         if (resp.status !== 200) throw new Error(resp.data);
     }
 
@@ -52,7 +52,7 @@ export default class UploadAgent {
     }
 
     private async switchBranch(repoPath: string, branch: string) {
-        const resp = await this.api.post(`/${repoPath}/switch?branch=${branch}`);
+        const resp = await this.api.put(`/${repoPath}/switch?branch=${branch}?worldEffect=false`);
         if (resp.status !== 200) throw new Error(resp.data);
     }
 
@@ -62,7 +62,12 @@ export default class UploadAgent {
     }
 
     private async push(repoPath: string, branch: string) {
-        const resp = await this.api.post(`/${repoPath}/push/${branch}`);
+        const resp = await this.api.post(`/${repoPath}/push?branch=${branch}`);
+        if (resp.status !== 200) throw new Error(resp.data);
+    }
+
+    private async wash(repoPath: string) {
+        const resp = await this.api.delete(`/${repoPath}/wash`);
         if (resp.status !== 200) throw new Error(resp.data);
     }
 
