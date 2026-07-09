@@ -22,11 +22,15 @@ export default class UploadAgent {
             if (!await this.checkRepositoryAvailability(repoPath)) {
                 await this.createRepository(repoPath);
             }
+
+            const relativeFilePath = dest.split("/").slice(2).join("/");
             
-            await this.ghostStage(src, dest);
-            await this.switchBranch(src, dest);
-            await this.commit(src);
-            await this.push(src, dest);
+            await this.ghostStage(repoPath, src, relativeFilePath);
+            await this.switchBranch(repoPath, relativeFilePath);
+            await this.commit(repoPath);
+            await this.push(repoPath, relativeFilePath);
+            await this.wash(repoPath);
+            await this.prepareAsset(repoPath, src);
         }
         catch (err) {
             console.error(err);
@@ -42,12 +46,12 @@ export default class UploadAgent {
     }
 
     private async createRepository(repoPath: string) {
-        const resp = await this.api.post(`/initialize/repository/${repoPath}`);
+        const resp = await this.api.post(`/initialize/repository/${repoPath}?remote=${import.meta.env.VITE_VCS_API_URL}`);
         if (resp.status !== 200) throw new Error(resp.data);
     }
 
-    private async ghostStage(repoPath: string, filepath: string) {
-        const resp = await this.api.post(`/${repoPath}/ghostStage?filepath=${filepath}`);
+    private async ghostStage(repoPath: string, filepath: string, ghostName: string) {
+        const resp = await this.api.post(`/${repoPath}/ghostStage?filepath=${filepath}?ghostName=${ghostName}`);
         if (resp.status !== 200) throw new Error(resp.data);
     }
 
@@ -68,6 +72,11 @@ export default class UploadAgent {
 
     private async wash(repoPath: string) {
         const resp = await this.api.delete(`/${repoPath}/wash`);
+        if (resp.status !== 200) throw new Error(resp.data);
+    }
+
+    private async prepareAsset(repoPath: string, filepath: string) {
+        const resp = await this.api.post(`/${repoPath}/prepareAsset?filepath=${filepath}`);
         if (resp.status !== 200) throw new Error(resp.data);
     }
 
