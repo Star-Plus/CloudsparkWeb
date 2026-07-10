@@ -9,6 +9,7 @@
 	import FileExplorer from "../components/FileExplorer.svelte";
 	import { getDriveStorageContext } from "../contexts/DriveStorageContext.svelte";
 	import { getAuthContext } from "$lib/features/auth/AuthContext.svelte";
+	import ExplorerHeader from "../ui/ExplorerHeader.svelte";
     
     let {creditService} : 
     {creditService: CreditService} = $props();
@@ -52,6 +53,7 @@
     </aside>
 
     <div class="h-full flex-1 p-8 relative">
+        <ExplorerHeader />
         <FileExplorer openFolder={openPath} />
     </div>
 </div>
