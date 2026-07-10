@@ -1,7 +1,17 @@
 <script lang="ts">
+	import { onMount } from "svelte";
+
     let {fileUrl} : {fileUrl: string} = $props();
 
-    let content = $derived(fetch(fileUrl).then((resp) => resp.text()));
+    let content = $state("");
+
+    onMount(() => {
+        fetch(fileUrl).then((response) => {
+            response.text().then((text) => {
+                content = text;
+            })
+        })
+    })
 </script>
 
 <div class="prose dark:prose-invert">
