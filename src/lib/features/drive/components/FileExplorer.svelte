@@ -8,32 +8,34 @@
 	import { getAuthContext } from "$lib/features/auth/AuthContext.svelte";
 	import ShareButton from "./ShareButton.svelte";
 	import vcsApi from "$lib/utils/apis/vcsApi";
+	import { onMount } from "svelte";
 
     let { openFolder } : { openFolder: (path: string) => Promise<DirObject> } = $props();
 
-    let owner = $derived(page.url.searchParams.get("owner") || "");
-    let subPathQuery = $derived(page.url.searchParams.get("path") || "");
+    let owner = $derived(page.params.path?.split("/")[0] || "");
+    let subPathQuery = $derived(page.params.path || "/");
     let root = $state<PathObjectDto>(new PathObjectDto());
+
+    onMount(() => {
+        if (owner == "") {
+            const user = authService.getUser();
+            goto(`/drive/${user?.username}`);
+        }
+    })
 
     $effect(() => {
         openFolder(subPathQuery).then((resp) => {
             root.setPayload(resp);
-            console.log("Root contents", resp);
         })
     })
 
     const authService = getAuthContext().service;
-    let user = $derived(owner || authService.getUser()?.username || "");
 
     async function handleOpenFile(dir: DirObject) {
         if (dir.type === "folder") {
-            const newParams = new URLSearchParams(page.url.searchParams);
-            newParams.set("path", dir.path);
-            goto(`?${newParams.toString()}`, {keepFocus: true, noScroll: true});
+            goto(`/drive/${dir.path}`);
         }
         else {
-            // TODO: Open file
-            console.log("Opening file", dir);
             fileToPreview = `${dir.path}/${dir.version}/${dir.type.split("/")[0]}`;
         }
     }
@@ -96,7 +98,7 @@
                     </td>
 
                     <td>
-                        <ShareButton objectPath={`${user}${child.path}`} />
+                        <ShareButton objectPath={`${child.path}`} />
                     </td>
                 </tr>
                 {/each}
