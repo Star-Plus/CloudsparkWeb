@@ -7,7 +7,7 @@
 
     const agent = new UploadAgent(axios.create({
         baseURL: "http://localhost:3848"
-    }));
+    }), "ws://localhost:3849");
 
     async function handleFileInput() {
         const filepath = await agent.openPickDialog();
@@ -18,7 +18,10 @@
             throw new Error("Cannot upload to root directory");
         }
 
-        const destination = parentDir + "/" + normalizedFilepath.split("/").pop();
+        const repoPath = parentDir.split("/").map(p => p == "vault" ? "$vault" : p).slice(0, 2).join("/");
+        const nestedPath = parentDir.split("/").slice(2).join("/");
+
+        const destination = repoPath + "/" + nestedPath + "/" + normalizedFilepath.split("/").pop();
         await agent.uploadFile(normalizedFilepath, destination);
     }
 

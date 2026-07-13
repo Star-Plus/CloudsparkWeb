@@ -3,19 +3,11 @@ import type { AxiosInstance } from "axios"
 export default class UploadAgent {
     
     private api: AxiosInstance;
-    private socket: WebSocket | null = null;
+    private socketBaseUrl?: string;
 
     constructor(api: AxiosInstance, socketUrl?: string) {
         this.api = api;
-
-        if (socketUrl) {
-            this.socket = new WebSocket(socketUrl);
-
-            this.socket.onopen = this.handleOnSocketOpen.bind(this);
-            this.socket.onclose = this.handleOnClose.bind(this);
-            this.socket.onerror = this.handleOnError.bind(this);
-            this.socket.onmessage = this.handleOnMessage.bind(this);
-        }
+        this.socketBaseUrl = socketUrl;
     }
 
     public async openPickDialog() : Promise<string> {
@@ -38,12 +30,16 @@ export default class UploadAgent {
             const remoteUrl = import.meta.env.VITE_VCS_API_URL + "/api/" + repoPath;
             await this.createRepository(repoPath, remoteUrl);
 
-            const relativeFilePath = dest.split("/").slice(2).join("/");
+            const relativePath = dest.split("/").slice(2).filter(p => p !== "").join("/");
             
-            await this.ghostStage(repoPath, src, relativeFilePath);
-            await this.switchBranch(repoPath, relativeFilePath);
-            await this.commit(repoPath, `Uploading file ${relativeFilePath} at ${new Date()}`);
-            await this.push(repoPath, relativeFilePath);
+            await this.switchBranch(repoPath, relativePath);
+            await this.ghostStage(repoPath, src, relativePath);
+            await this.commit(repoPath, `Uploading file ${relativePath} at ${new Date()}`);
+
+            const socket = this.openPushSocket(repoPath);
+            await this.push(repoPath, relativePath);
+            socket?.close();
+
             await this.wash(repoPath);
             await this.prepareAsset(repoPath, src);
         }
@@ -52,14 +48,25 @@ export default class UploadAgent {
         }
     }
 
-    private async checkRepositoryAvailability(repoPath: string) : Promise<boolean> {
-        try {
-            const resp = await this.api.get(`/exists/${repoPath}`);
-            return true;
-        } catch (err) {
-            console.error(err);
-            return false;
-        }
+    private openPushSocket(repoPath: string): WebSocket | null {
+        if (!this.socketBaseUrl) return null;
+
+        const url = `${this.socketBaseUrl}/?repo=${encodeURIComponent(repoPath)}`;
+        const socket = new WebSocket(url);
+
+        socket.onopen = () => console.log("Push socket opened for", repoPath);
+        socket.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                console.log("Push progress:", data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        socket.onerror = (event) => console.error("Push socket error:", event);
+        socket.onclose = (event) => console.log("Push socket closed", event);
+
+        return socket;
     }
 
     private async createRepository(repoPath: string, remoteUrl: string) {
@@ -95,31 +102,5 @@ export default class UploadAgent {
     private async prepareAsset(repoPath: string, filepath: string) {
         const resp = await this.api.post(`/${repoPath}/prepareAsset?filepath=${filepath}`);
         if (resp.status !== 200) throw new Error(resp.data);
-    }
-
-    private handleOnSocketOpen(event: Event) {
-        if (!this.socket) return;
-        
-        console.log('Socket opened');
-        const payload = JSON.stringify({action: 'greet', message: 'Hello from the client!'});
-        this.socket.send(payload);
-    }
-
-    private handleOnMessage(event: MessageEvent) {
-        try {
-            const data = JSON.parse(event.data);
-            console.log("Mesasge received from server", data);
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
-
-    private handleOnError(event: Event) {
-        console.error("WebSocket error observed:", event);
-    }
-
-    private handleOnClose(event: CloseEvent) {
-        console.log("WebSocket closed", event);
     }
 }
