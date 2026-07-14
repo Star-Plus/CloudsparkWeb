@@ -2,12 +2,11 @@ import type ITask from "./ITask";
 
 export default class ProgressingTask implements ITask {
     public action: string;
-    public progress: number;
+    public progress = $state(0);
     public total: number;
 
-    constructor(action: string, progress: number, total: number) {
+    constructor(action: string, total: number) {
         this.action = action;
-        this.progress = progress;
         this.total = total;
     }
 

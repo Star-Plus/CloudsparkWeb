@@ -1,9 +1,9 @@
-import Task from "./Task";
+import type ITask from "./ITask";
 
 export default class TaskManager {
 
     private locked = false;
-    tasks = $state<Task[]>([]);
+    tasks = $state<ITask[]>([]);
 
     private static instance: TaskManager
     private constructor() {
@@ -20,7 +20,7 @@ export default class TaskManager {
         return TaskManager.instance;
     }
 
-    addTask(task: Task) {
+    addTask(task: ITask) {
         this.tasks = [...this.tasks, task];
     }
 
