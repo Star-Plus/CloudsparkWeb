@@ -18,6 +18,10 @@ export default class ProgressingTask implements ITask {
         this.progress += amount;
     }
 
+    public update(progress: number): void {
+        this.progress = progress;
+    }
+
     public reset(): void {
         this.progress = 0;
     }
