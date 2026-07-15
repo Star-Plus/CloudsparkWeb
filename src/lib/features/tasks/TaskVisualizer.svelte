@@ -1,5 +1,5 @@
 <script lang="ts">
-	import BoxTask from "./BoxTask.svelte";
+	import BoxTask from "./BoxTask.svelte.ts";
 	import type ITask from "./ITask";
 	import ProgressingTask from "./ProgressingTask.svelte";
     import TaskVisualizer from "./TaskVisualizer.svelte";

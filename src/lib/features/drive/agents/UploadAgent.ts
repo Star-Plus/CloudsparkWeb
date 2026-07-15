@@ -1,13 +1,17 @@
+import BoxTask from "$lib/features/tasks/BoxTask.svelte";
+import TaskManager from "$lib/features/tasks/TaskManager.svelte";
 import type { AxiosInstance } from "axios"
 
 export default class UploadAgent {
     
     private api: AxiosInstance;
     private socketBaseUrl?: string;
+    private vcsUrl?: string;
 
-    constructor(api: AxiosInstance, socketUrl?: string) {
+    constructor(api: AxiosInstance, socketUrl?: string, vcsUrl?: string) {
         this.api = api;
         this.socketBaseUrl = socketUrl;
+        this.vcsUrl = vcsUrl;
     }
 
     public async openPickDialog() : Promise<string> {
@@ -27,7 +31,7 @@ export default class UploadAgent {
         try {
             const repoPath = dest.split("/").slice(0, 2).join("/");
             
-            const remoteUrl = import.meta.env.VITE_VCS_API_URL + "/api/" + repoPath;
+            const remoteUrl = this.vcsUrl + "/api/" + repoPath;
             await this.createRepository(repoPath, remoteUrl);
 
             const relativePath = dest.split("/").slice(2).filter(p => p !== "").join("/");
@@ -36,7 +40,8 @@ export default class UploadAgent {
             await this.ghostStage(repoPath, src, relativePath);
             await this.commit(repoPath, `Uploading file ${relativePath} at ${new Date()}`);
 
-            const socket = this.openPushSocket(repoPath);
+            const socket = this.handlePushSocket(repoPath);
+
             await this.push(repoPath, relativePath);
             socket?.close();
 
@@ -45,16 +50,24 @@ export default class UploadAgent {
         }
         catch (err) {
             console.error(err);
+            throw err;
         }
     }
 
-    private openPushSocket(repoPath: string): WebSocket | null {
+    public handlePushSocket(repoPath: string): WebSocket | null {
         if (!this.socketBaseUrl) return null;
 
         const url = `${this.socketBaseUrl}/?repo=${encodeURIComponent(repoPath)}`;
         const socket = new WebSocket(url);
 
-        socket.onopen = () => console.log("Push socket opened for", repoPath);
+        const taskManager = TaskManager.getInstance();
+        const boxTask = new BoxTask(`Pushing ${repoPath} to ${this.vcsUrl}`);
+
+        socket.onopen = () => {
+            console.log("Push socket opened");
+            boxTask.open();
+            taskManager.addTask(boxTask);
+        }
         socket.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
@@ -64,33 +77,46 @@ export default class UploadAgent {
             }
         };
         socket.onerror = (event) => console.error("Push socket error:", event);
-        socket.onclose = (event) => console.log("Push socket closed", event);
+        socket.onclose = (event) => {
+            console.log("Push socket closed:", event);
+            boxTask.close();
+        }
 
         return socket;
     }
 
     private async createRepository(repoPath: string, remoteUrl: string) {
-        const resp = await this.api.post(`/initialize/repository/${repoPath}?remote=${remoteUrl}`);
+        const resp = await this.api.post(`/initialize/repository/${repoPath}`, null, {
+            params: { remote: remoteUrl }
+        });
         if (resp.status !== 200) throw new Error(resp.data);
     }
 
     private async ghostStage(repoPath: string, filepath: string, ghostName: string) {
-        const resp = await this.api.post(`/${repoPath}/ghostStage?filepath=${filepath}&ghostName=${ghostName}`);
+        const resp = await this.api.post(`/${repoPath}/ghostStage`, null, {
+            params: { filepath, ghostName }
+        });
         if (resp.status !== 200) throw new Error(resp.data);
     }
 
     private async switchBranch(repoPath: string, branch: string) {
-        const resp = await this.api.put(`/${repoPath}/switch?branch=${branch}&worldEffect=false`);
+        const resp = await this.api.put(`/${repoPath}/switch`, null, {
+            params: { branch, worldEffect: false }
+        });
         if (resp.status !== 200) throw new Error(resp.data);
     }
 
     private async commit(repoPath: string, message?: string) {
-        const resp = await this.api.post(`/${repoPath}/commit?message=${message}`);
+        const resp = await this.api.post(`/${repoPath}/commit`, null, {
+            params: { message }
+        });
         if (resp.status !== 200) throw new Error(resp.data);
     }
 
     private async push(repoPath: string, branch: string) {
-        const resp = await this.api.post(`/${repoPath}/push?branch=${branch}`);
+        const resp = await this.api.post(`/${repoPath}/push`, null, {
+            params: { branch }
+        });
         if (resp.status !== 200) throw new Error(resp.data);
     }
 
@@ -100,7 +126,9 @@ export default class UploadAgent {
     }
 
     private async prepareAsset(repoPath: string, filepath: string) {
-        const resp = await this.api.post(`/${repoPath}/prepareAsset?filepath=${filepath}`);
+        const resp = await this.api.post(`/${repoPath}/prepareAsset`, null, {
+            params: { filepath }
+        });
         if (resp.status !== 200) throw new Error(resp.data);
     }
 }
