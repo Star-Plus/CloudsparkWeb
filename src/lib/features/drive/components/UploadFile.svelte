@@ -5,9 +5,10 @@
 	import Icon from "@iconify/svelte";
 
 
-    const agent = new UploadAgent(axios.create({
-        baseURL: "http://localhost:3848"
-    }), "ws://localhost:3849");
+    const agent = new UploadAgent(axios.create({baseURL: "http://localhost:3848"}), 
+        "ws://localhost:3849",
+        import.meta.env.VITE_VCS_API_URL
+    );
 
     async function handleFileInput() {
         const filepath = await agent.openPickDialog();
