@@ -40,7 +40,7 @@ export default class UploadAgent {
             await this.ghostStage(repoPath, src, relativePath);
             await this.commit(repoPath, `Uploading file ${relativePath} at ${new Date()}`);
 
-            const socket = this.handlePushSocket(repoPath);
+            const socket = await this.handlePushSocket(repoPath);
 
             await this.push(repoPath, relativePath);
             socket?.close();
@@ -54,35 +54,47 @@ export default class UploadAgent {
         }
     }
 
-    public handlePushSocket(repoPath: string): WebSocket | null {
-        if (!this.socketBaseUrl) return null;
+    public handlePushSocket(repoPath: string): Promise<WebSocket | null> {
+        if (!this.socketBaseUrl) return Promise.resolve(null);
 
-        const url = `${this.socketBaseUrl}/?repo=${encodeURIComponent(repoPath)}`;
-        const socket = new WebSocket(url);
-
-        const taskManager = TaskManager.getInstance();
-        const boxTask = new BoxTask(`Pushing ${repoPath} to ${this.vcsUrl}`);
-
-        socket.onopen = () => {
-            console.log("Push socket opened");
-            boxTask.open();
-            taskManager.addTask(boxTask);
-        }
-        socket.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                console.log("Push progress:", data);
-            } catch (err) {
-                console.error(err);
+        return new Promise((resolve, reject) => {
+            const url = `${this.socketBaseUrl}/?repo=${encodeURIComponent(repoPath)}`;
+            const socket = new WebSocket(url);
+    
+            const taskManager = TaskManager.getInstance();
+            const boxTask = new BoxTask(`Pushing ${repoPath} to ${this.vcsUrl}`);
+    
+            let isConnected = false;
+    
+            socket.onopen = () => {
+                console.log("Push socket opened");
+                boxTask.open();
+                taskManager.addTask(boxTask);
             }
-        };
-        socket.onerror = (event) => console.error("Push socket error:", event);
-        socket.onclose = (event) => {
-            console.log("Push socket closed:", event);
-            boxTask.close();
-        }
-
-        return socket;
+            socket.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    console.log("Push progress:", data);
+    
+                    if (data.type == "connected" && !isConnected) {
+                        isConnected = true;
+                        resolve(socket);
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            };
+            socket.onerror = (event) => console.error("Push socket error:", event);
+            socket.onclose = (event) => {
+                console.log("Push socket closed:", event);
+                boxTask.close();
+                if (!isConnected) {
+                    reject(new Error("Push socket closed"));
+                }
+            }
+    
+            return socket;
+        })
     }
 
     private async createRepository(repoPath: string, remoteUrl: string) {
