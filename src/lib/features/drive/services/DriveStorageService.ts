@@ -37,6 +37,15 @@ export default class DriveStorageService extends Mockable {
         return dto;
     }
 
+    async createFolder(root: string, path: string) : Promise<void> {
+        try {
+            await this.api.post(`/drive/${root}/create-folder`, {path});
+        }
+        catch (err) {
+            throw err as Error;
+        }
+    }
+
     async mock_fetchPathContents(path: string) : Promise<PathObjectDto> {
         const dto = new PathObjectDto();
 
