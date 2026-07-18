@@ -1,5 +1,5 @@
 <script lang="ts">
-	import UploadAgent from "../agents/UploadAgent";
+	import UploadAgent from "../agents/upload/UploadAgent";
     import axios from "axios";
     import { page } from "$app/state";
 	import Icon from "@iconify/svelte";

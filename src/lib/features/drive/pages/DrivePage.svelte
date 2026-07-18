@@ -10,9 +10,13 @@
 	import { getDriveStorageContext } from "../contexts/DriveStorageContext.svelte";
 	import { getAuthContext } from "$lib/features/auth/AuthContext.svelte";
 	import ExplorerHeader from "../ui/ExplorerHeader.svelte";
+	import { page } from "$app/state";
+	import { goto } from "$app/navigation";
     
     let {creditService} : 
     {creditService: CreditService} = $props();
+
+    let owner = $derived(page.params.path?.split("/")[0] || "");
 
     const driveStorageService = getDriveStorageContext().service;
     const authService = getAuthContext().service;
@@ -23,6 +27,15 @@
     let user = $derived(authService.getUser());
 
     onMount(() => {
+
+        onMount(() => {
+            if (owner == "") {
+                const user = authService.getUser();
+                const current = page.url.pathname;
+                goto(`${current}/${user?.username}`);
+            }
+        })
+
         creditService.fetchCredits(`${user?.username}`).then((dto) => (creditsInfo = dto));
         openPath(`${user?.username}`).then((dto) => {
             rootSelfPathContens.setPayload(dto);

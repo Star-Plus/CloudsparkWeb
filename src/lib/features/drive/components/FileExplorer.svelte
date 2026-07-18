@@ -8,20 +8,12 @@
 	import { getAuthContext } from "$lib/features/auth/AuthContext.svelte";
 	import ShareButton from "./ShareButton.svelte";
 	import vcsApi from "$lib/utils/apis/vcsApi";
-	import { onMount } from "svelte";
+	import DownloadButton from "./DownloadButton.svelte";
 
     let { openFolder } : { openFolder: (path: string) => Promise<DirObject> } = $props();
 
-    let owner = $derived(page.params.path?.split("/")[0] || "");
     let subPathQuery = $derived(page.params.path || "/");
     let root = $state<PathObjectDto>(new PathObjectDto());
-
-    onMount(() => {
-        if (owner == "") {
-            const user = authService.getUser();
-            goto(`/drive/${user?.username}`);
-        }
-    })
 
     $effect(() => {
         openFolder(subPathQuery).then((resp) => {
@@ -97,8 +89,9 @@
                         {/if}
                     </td>
 
-                    <td>
+                    <td class="flex gap-2">
                         <ShareButton objectPath={`${child.path}`} />
+                        <DownloadButton objectPath={`${child.path}`} />
                     </td>
                 </tr>
                 {/each}

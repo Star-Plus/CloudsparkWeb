@@ -15,7 +15,7 @@ sequenceDiagram
     VcsLocalServer ->>+ OS: Save file dialog
     User -> OS: Pick save destination
 
-    OS ->>- VcsLocalServer: Path selected    
+    OS ->>- VcsLocalServer: Path selected
     VcsLocalServer ->>- DownloadAgent: path selected
 
     DownloadAgent ->>+ VcsLocalServer: Connect download web socket
@@ -23,13 +23,21 @@ sequenceDiagram
 
     VcsLocalServer ->>- DownloadAgent: socket message {type: "connected"}
 
-    DownloadAgent ->>+ VcsLocalServer: /pull?branch={strippedFilePath}&version={version}&dest={saveDestination}
+    DownloadAgent ->>+ VcsLocalServer: {repoPath}/pull?branch={strippedFilePath}
 
     VcsLocalServer -) DownloadAgent: Download stats
     DownloadAgent -) TaskManager: Update download stats
 
     VcsLocalServer ->>- DownloadAgent: Download done
 
+    DownloadAgent ->>+ VcsLocalServer: /copy?from={repoPath}/{filename}&to={destination}
+    VcsLocalServer ->>- DownloadAgent: Copy done
+
+    DownloadAgent ->>+ VcsLocalServer: /move?from{repoPath}/{filename}&to=readies
+    VcsLocalServer ->>- DownloadAgent: 200 OK
+
+    DownloadAgent ->>+ VcsLocalServer: {repoPath}/wash
+    VcsLocalServer ->>- DownloadAgent: 200 OK
 
     
 
