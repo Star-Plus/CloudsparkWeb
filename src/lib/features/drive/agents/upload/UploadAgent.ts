@@ -46,7 +46,7 @@ export default class UploadAgent {
             socket?.close();
 
             await this.wash(repoPath);
-            await this.prepareAsset(repoPath, src);
+            await this.prepareAsset(repoPath, src, dest);
         }
         catch (err) {
             console.error(err);
@@ -137,8 +137,8 @@ export default class UploadAgent {
         if (resp.status !== 200) throw new Error(resp.data);
     }
 
-    private async prepareAsset(repoPath: string, filepath: string) {
-        const resp = await this.api.post(`/${repoPath}/prepareAsset`, null, {
+    private async prepareAsset(repoPath: string, filepath: string, destination: string) {
+        const resp = await this.api.post(`/${repoPath}/prepareAsset?destination=${destination}`, null, {
             params: { filepath }
         });
         if (resp.status !== 200) throw new Error(resp.data);
