@@ -1,0 +1,14 @@
+sequenceDiagram
+    actor User
+    participant UIController
+    participant DownloadAgent
+    participant VcsLocalServer
+    participant TaskManager
+
+    
+    User -->+ UIController: Selects a file to download
+    UIController -) DownloadAgent: download(filepath, version)
+    DownloadAgent -->+ VcsLocalServer: /initialize/repository/{repoPath}
+    VcsLocalServer -->- DownloadAgent: 200 OK
+
+    
