@@ -46,7 +46,7 @@ export default class UploadAgent {
             socket?.close();
 
             await this.wash(repoPath);
-            await this.prepareAsset(repoPath, src, dest);
+            await this.prepareAsset(repoPath, src, relativePath);
         }
         catch (err) {
             console.error(err);
@@ -58,7 +58,7 @@ export default class UploadAgent {
         if (!this.socketBaseUrl) return Promise.resolve(null);
 
         return new Promise((resolve, reject) => {
-            const url = `${this.socketBaseUrl}/?repo=${encodeURIComponent(repoPath)}`;
+            const url = `${this.socketBaseUrl}/push?repo=${encodeURIComponent(repoPath)}`;
             const socket = new WebSocket(url);
     
             const taskManager = TaskManager.getInstance();
@@ -112,8 +112,9 @@ export default class UploadAgent {
     }
 
     private async switchBranch(repoPath: string, branch: string) {
+        const owner = repoPath.split("/")[0];
         const resp = await this.api.put(`/${repoPath}/switch`, null, {
-            params: { branch, worldEffect: false }
+            params: { branch: owner + "/" + branch, worldEffect: false }
         });
         if (resp.status !== 200) throw new Error(resp.data);
     }
@@ -126,8 +127,9 @@ export default class UploadAgent {
     }
 
     private async push(repoPath: string, branch: string) {
+        const owner = repoPath.split("/")[0];
         const resp = await this.api.post(`/${repoPath}/push`, null, {
-            params: { branch }
+            params: { branch: owner + "/" + branch }
         });
         if (resp.status !== 200) throw new Error(resp.data);
     }

@@ -33,6 +33,8 @@ export default class DownloadAgent {
 
             const remoteUrl = this.vcsUrl + "/api/" + repoPath;
             await this.createRepository(repoPath, remoteUrl);
+
+            await this.switchBranch(repoPath, filepath);
             
             const socket = await this.handlePullSocket(repoPath);
             await this.pull(repoPath, filepath);
@@ -53,7 +55,7 @@ export default class DownloadAgent {
         if (!this.socketBaseUrl) return Promise.resolve(null);
 
         return new Promise((resolve, reject) => {
-            const url = `${this.socketBaseUrl}?pull=${encodeURIComponent(repoPath)}`;
+            const url = `${this.socketBaseUrl}/pull?repo=${encodeURIComponent(repoPath)}`;
             const socket = new WebSocket(url);
     
             const taskManager = TaskManager.getInstance();
@@ -99,9 +101,19 @@ export default class DownloadAgent {
         if (resp.status !== 200) throw new Error(resp.data);
     }
 
+    
+    private async switchBranch(repoPath: string, branch: string) {
+        const owner = repoPath.split("/")[0];
+        const resp = await this.api.put(`/${repoPath}/switch`, null, {
+            params: { branch: owner + "/" + branch, worldEffect: false }
+        });
+        if (resp.status !== 200) throw new Error(resp.data);
+    }
+
     private async pull(repoPath: string, filepath: string) {
+        const owner = repoPath.split("/")[0];
         const resp = await this.api.post(`/${repoPath}/pull`, null, {
-            params: { branch: filepath }
+            params: { branch: owner + "/" + filepath }
         });
         if (resp.status !== 200) throw new Error(resp.data);
     }

@@ -12,7 +12,10 @@
             import.meta.env.VITE_VCS_API_URL,
         );
 
+        console.log("Downloading", objectPath);
+
         const saveDest = await agent.openSaveFileDialog(objectPath.split("/").pop() ?? "");
+        agent.download(objectPath, saveDest);
         console.log(saveDest);
     }
 </script>
