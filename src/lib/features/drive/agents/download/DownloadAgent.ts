@@ -1,4 +1,6 @@
 import BoxTask from "$lib/features/tasks/BoxTask.svelte";
+import ConfirmableTask from "$lib/features/tasks/ConfirmableTask.svelte";
+import ProgressingTask from "$lib/features/tasks/ProgressingTask.svelte";
 import TaskManager from "$lib/features/tasks/TaskManager.svelte";
 import type { AxiosInstance } from "axios";
 
@@ -34,14 +36,16 @@ export default class DownloadAgent {
             const remoteUrl = this.vcsUrl + "/api/" + repoPath;
             await this.createRepository(repoPath, remoteUrl);
 
-            await this.switchBranch(repoPath, filepath);
+            const relativePath = filepath.split("/").slice(2).filter(p => p !== "").join("/");
+
+            await this.switchBranch(repoPath, relativePath);
             
             const socket = await this.handlePullSocket(repoPath);
-            await this.pull(repoPath, filepath);
+            await this.pull(repoPath, relativePath);
             socket?.close();
 
-            await this.copy(filepath, destination);
-            await this.prepareAsset(repoPath, filepath, destination);
+            await this.copy(`$vault-home/${repoPath}/${relativePath}`, destination);
+            await this.prepareAsset(repoPath, `$vault-home/${repoPath}/${relativePath}`, relativePath);
 
             await this.wash(repoPath);
         }
@@ -72,10 +76,45 @@ export default class DownloadAgent {
                 try {
                     const data = JSON.parse(event.data);
                     console.log("Pull progress:", data);
-    
-                    if (data.type == "connected" && !isConnected) {
-                        isConnected = true;
-                        resolve(socket);
+
+                    switch (data.type) {
+                        case "connected": {
+                            if (!isConnected) {
+                                isConnected = true;
+                                resolve(socket);
+                            }
+                            break;
+                        }
+                        case "task": {
+                            switch (data.taskType) {
+                                case "progressing": {
+                                    boxTask.addSubtask(new ProgressingTask(data.action, data.total));
+                                    break;
+                                }
+                                case "confirmation": {
+                                    boxTask.addSubtask(new ConfirmableTask(data.action));
+                                    break;
+                                }
+                                default: {
+                                    console.error("Unknown task type:", data.taskType);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        case "forward": {
+                            const task = boxTask.findSubtask(data.action);
+                            if (task instanceof ConfirmableTask) {
+                                task.confirm();
+                            }
+                            else if (task instanceof ProgressingTask) {
+                                task.progress = data.current;
+                            }
+                            else {
+                                console.error("Unknown task:", task);
+                            }
+                            break;
+                        }
                     }
                 } catch (err) {
                     console.error(err);
@@ -105,7 +144,7 @@ export default class DownloadAgent {
     private async switchBranch(repoPath: string, branch: string) {
         const owner = repoPath.split("/")[0];
         const resp = await this.api.put(`/${repoPath}/switch`, null, {
-            params: { branch: owner + "/" + branch, worldEffect: false }
+            params: { branch: owner + ":" + branch, worldEffect: false }
         });
         if (resp.status !== 200) throw new Error(resp.data);
     }
@@ -113,7 +152,7 @@ export default class DownloadAgent {
     private async pull(repoPath: string, filepath: string) {
         const owner = repoPath.split("/")[0];
         const resp = await this.api.post(`/${repoPath}/pull`, null, {
-            params: { branch: owner + "/" + filepath }
+            params: { branch: owner + ":" + filepath }
         });
         if (resp.status !== 200) throw new Error(resp.data);
     }
@@ -126,8 +165,8 @@ export default class DownloadAgent {
     }
 
     private async prepareAsset(repoPath: string, filepath: string, destination: string) {
-        const resp = await this.api.post(`/${repoPath}/prepareAsset?destination=${destination}&moving=true`, null, {
-            params: { filepath }
+        const resp = await this.api.post(`/${repoPath}/prepareAsset`, null, {
+            params: { filepath, moving: true, destination }
         });
         if (resp.status !== 200) throw new Error(resp.data);
     }

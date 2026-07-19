@@ -9,6 +9,7 @@
 	import ShareButton from "./ShareButton.svelte";
 	import vcsApi from "$lib/utils/apis/vcsApi";
 	import DownloadButton from "./DownloadButton.svelte";
+	import TaskManagerSidebar from "$lib/features/tasks/TaskManagerSidebar.svelte";
 
     let { openFolder } : { openFolder: (path: string) => Promise<DirObject> } = $props();
 
@@ -114,7 +115,7 @@
 
 </div>
 
-
+<TaskManagerSidebar />
 
 <style>
     thead > tr > th {

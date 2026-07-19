@@ -14,8 +14,13 @@ export default class BoxTask implements ITask {
         this.subtasks = [...this.subtasks, task];
     }
 
+    findSubtask(action: string): ITask | undefined {
+        return this.subtasks.find((c) => c.action === action);
+    }
+
     close() { 
         this.closed = true;
+        this.subtasks = [];
     }
 
     open() {
