@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Icon from "@iconify/svelte";
 	import ShareObjectForm from "./ShareObjectForm.svelte";
 	import { onMount } from "svelte";
 
@@ -37,7 +36,9 @@
 </script>
 
 <button onclick={toggleSharing}>
-    <Icon icon="fluent:people-add-20-filled" class="text-text-950 text-2xl" />
+    <span class="material-symbols-rounded">
+    send
+    </span>
 </button>
 
 {#if isSharing}

@@ -1,5 +1,4 @@
 <script lang="ts">
-    import Icon from "@iconify/svelte";
 	import DownloadAgent from "../agents/download/DownloadAgent";
 	import axios from "axios";
 
@@ -21,5 +20,7 @@
 </script>
 
 <button type="button" onclick={handleOnClick}>
-    <Icon icon="material-symbols:download-rounded" class="text-2xl" />
+    <span class="material-symbols-rounded">
+    arrow_circle_down
+    </span>
 </button>

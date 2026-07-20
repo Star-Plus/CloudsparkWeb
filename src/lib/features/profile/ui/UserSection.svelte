@@ -1,7 +1,7 @@
 <script lang="ts">
     import Icon from "@iconify/svelte";
-	import type UserProfileResponse from "../services/dtos/UserProfileResponse";
-	import type { UserProfilePayload } from "../services/dtos/UserProfileResponse";
+	import type UserProfileResponse from "../dtos/UserProfileResponse";
+	import type { UserProfilePayload } from "../dtos/UserProfileResponse";
 	import { TransferState } from "$lib/utils/models/BaseDTO.svelte";
 	import "@aejkatappaja/phantom-ui";
 

@@ -35,14 +35,14 @@
     <div>
 
         <button class="side-button" onclick={handleProfileClick}>
-            <Icon icon="fluent:person-16-filled" />
+            <Icon icon="material-symbols:person-rounded" />
         </button>
 
         <button class="side-button" onclick={() => themeController?.toggleTheme()}>
             {#if themeController?.isDark} 
-            <Icon icon="fluent:weather-sunny-16-filled" /> 
+            <Icon icon="material-symbols:wb-sunny-rounded" /> 
             {:else} 
-            <Icon icon="fluent:weather-moon-16-filled" /> 
+            <Icon icon="material-symbols:dark-mode-rounded" /> 
             {/if}
         </button>
 

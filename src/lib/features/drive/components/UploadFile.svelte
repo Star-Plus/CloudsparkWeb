@@ -2,7 +2,6 @@
 	import UploadAgent from "../agents/upload/UploadAgent";
     import axios from "axios";
     import { page } from "$app/state";
-	import Icon from "@iconify/svelte";
 
 
     const agent = new UploadAgent(axios.create({baseURL: "http://localhost:3848"}), 
@@ -29,6 +28,8 @@
 </script>
 
 <button class="flex items-center bg-background-200 hover:bg-background-300 py-2 px-4 rounded" onclick={handleFileInput}>
-    <Icon icon="material-symbols:upload-rounded" class="mr-2" />
+    <span class="material-symbols-rounded mr-2">
+        upload
+    </span>
     Upload
 </button>

@@ -9,7 +9,6 @@
 	import ShareButton from "./ShareButton.svelte";
 	import vcsApi from "$lib/utils/apis/vcsApi";
 	import DownloadButton from "./DownloadButton.svelte";
-	import TaskManagerSidebar from "$lib/features/tasks/TaskManagerSidebar.svelte";
 
     let { openFolder } : { openFolder: (path: string) => Promise<DirObject> } = $props();
 
@@ -73,7 +72,9 @@
                     <td>
                         <button onclick={() => handleOpenFile(child)} class="flex gap-2 items-center text-xl item w-full py-1">
                             {#if child.type === "folder"}
-                                <Icon icon="fluent:folder-20-filled" class="text-primary-500" />
+                                <span class="material-symbols-rounded text-primary-500">
+                                    folder
+                                </span>
                                 <p class="font-medium">{child.name}</p>
                                 {:else}
                                 <!-- TODO: Ultraviolet -->
@@ -114,8 +115,6 @@
     
 
 </div>
-
-<TaskManagerSidebar />
 
 <style>
     thead > tr > th {

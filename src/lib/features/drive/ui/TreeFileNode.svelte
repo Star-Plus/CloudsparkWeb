@@ -55,9 +55,13 @@
             {/if}
             <!-- Special Folders -->
             {#if node.path == "/vault"}
-                <Icon icon="fluent:lock-closed-16-filled" class="text-secondary-500 text-2xl" />
+                <span class="material-symbols-rounded">
+                    cloud_lock
+                </span>
             {:else if node.path == "/shared"}
-                <Icon icon="fluent:folder-people-24-filled" class="text-secondary-500 text-2xl" />
+                <span class="material-symbols-rounded">
+                    folder_shared
+                </span>
             {:else}
                 <Icon icon="fluent:folder-20-filled" class="text-primary-500 text-lg" />
             {/if}

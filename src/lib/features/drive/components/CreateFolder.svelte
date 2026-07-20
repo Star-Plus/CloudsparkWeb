@@ -1,7 +1,6 @@
 <script lang="ts">
 
     import { page } from "$app/state";
-	import Icon from "@iconify/svelte";
 	import { getDriveStorageContext } from "../contexts/DriveStorageContext.svelte";
 
     let owner = $derived(page.params.path?.split("/")[0] || "");
@@ -29,7 +28,9 @@
 </script>
 
 <button class="bg-background-200 hover:bg-background-300 px-3 py-2 rounded-sm flex items-center gap-2" onclick={() => isCreatingFolder = true}>
-    <Icon icon="material-symbols:create-new-folder" class=" text-lg" />
+    <span class="material-symbols-rounded">
+    create_new_folder
+    </span>
     Create Folder
 </button>
 
