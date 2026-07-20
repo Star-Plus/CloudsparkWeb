@@ -1,4 +1,4 @@
-import DTO from "$lib/utils/models/BaseDTO";
+import DTO from "$lib/utils/models/BaseDTO.svelte";
 
 export type UserProfilePayload = {
     fullName: string;

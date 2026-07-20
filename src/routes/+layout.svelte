@@ -27,13 +27,13 @@
 
 <ThemeContext />
 
-<main class="min-h-screen bg-background-50">
+<main class="h-screen bg-background-50 flex flex-col overflow-auto">
 
 	{#if renderNavbar}
 		<div class="sticky top-0 left-0 z-10 bg-background-50 border-b border-background-300 py-4 px-6">
 			<HeaderBar />
 		</div>
-		<div class="w-full px-6 pt-6">
+		<div class="w-full flex-1 min-h-0">
 			{@render children()}
 		</div>
 	{:else}

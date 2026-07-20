@@ -1,0 +1,44 @@
+sequenceDiagram
+    actor User
+    participant UIController
+    participant DownloadAgent
+    participant VcsLocalServer
+    participant TaskManager
+
+    
+    User -->+ UIController: Selects a file to download
+    UIController -) DownloadAgent: download(filepath)
+    DownloadAgent ->>+ VcsLocalServer: /initialize/repository/{repoPath}
+    VcsLocalServer ->>- DownloadAgent: 200 OK
+
+    DownloadAgent ->>+ VcsLocalServer: /pickSaveDest
+    VcsLocalServer ->>+ OS: Save file dialog
+    User -> OS: Pick save destination
+
+    OS ->>- VcsLocalServer: Path selected
+    VcsLocalServer ->>- DownloadAgent: path selected
+
+    DownloadAgent ->>+ VcsLocalServer: Connect download web socket
+    VcsLocalServer -) DownloadAgent: Socket opened
+
+    VcsLocalServer ->>- DownloadAgent: socket message {type: "connected"}
+
+    DownloadAgent ->>+ VcsLocalServer: {repoPath}/pull?branch={strippedFilePath}
+
+    VcsLocalServer -) DownloadAgent: Download stats
+    DownloadAgent -) TaskManager: Update download stats
+
+    VcsLocalServer ->>- DownloadAgent: Download done
+
+    DownloadAgent ->>+ VcsLocalServer: /copy?from={repoPath}/{filename}&to={destination}
+    VcsLocalServer ->>- DownloadAgent: Copy done
+
+    DownloadAgent ->>+ VcsLocalServer: /move?from{repoPath}/{filename}&to=readies
+    VcsLocalServer ->>- DownloadAgent: 200 OK
+
+    DownloadAgent ->>+ VcsLocalServer: {repoPath}/wash
+    VcsLocalServer ->>- DownloadAgent: 200 OK
+
+    
+
+    

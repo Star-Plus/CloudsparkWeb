@@ -1,7 +1,7 @@
 <script lang="ts">
     import Icon from "@iconify/svelte";
 	import type ContributionActivityStreamDto from "../dtos/ContributionActivityStream";
-	import { TransferState } from "$lib/utils/models/BaseDTO";
+	import { TransferState } from "$lib/utils/models/BaseDTO.svelte";
 	import type { ActivityStreamPayload } from "../dtos/ContributionActivityStream";
 
     let {activityStream} : {activityStream: ContributionActivityStreamDto} = $props();

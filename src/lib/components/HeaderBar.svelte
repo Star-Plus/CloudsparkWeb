@@ -35,14 +35,14 @@
     <div>
 
         <button class="side-button" onclick={handleProfileClick}>
-            <Icon icon="mynaui:user" />
+            <Icon icon="material-symbols:person-rounded" />
         </button>
 
         <button class="side-button" onclick={() => themeController?.toggleTheme()}>
             {#if themeController?.isDark} 
-            <Icon icon="mynaui:sun" /> 
+            <Icon icon="material-symbols:wb-sunny-rounded" /> 
             {:else} 
-            <Icon icon="mynaui:moon" /> 
+            <Icon icon="material-symbols:dark-mode-rounded" /> 
             {/if}
         </button>
 

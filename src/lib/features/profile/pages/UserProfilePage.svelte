@@ -6,7 +6,7 @@
 	import UserProfileResponse from "../dtos/UserProfileResponse";
 	import { onMount } from "svelte";
 	import UserSection from "../ui/UserSection.svelte";
-	import { TransferState } from "$lib/utils/models/BaseDTO";
+	import { TransferState } from "$lib/utils/models/BaseDTO.svelte";
 	import type UserPortfolioService from "../services/UserPortfolioService";
 	import RepositoryDTO from "../dtos/RepositoryResponse";
     import PeriodContributionDto from "../dtos/PeriodContribution";
