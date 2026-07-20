@@ -39,13 +39,13 @@
   }
 </script>
 
-<h2 class="font-['Hanken_Grotesk'] font-semibold text-white text-lg mb-2 min-h-[1.5rem]">
+<h2 class="font-['Hanken_Grotesk'] font-semibold text-900 text-lg mb-2 min-h-6">
   {displayedHeading}
   {#if cursorVisible && displayedHeading.length < headingText.length}
     <span class="typing-cursor">|</span>
   {/if}
 </h2>
-<p class="text-txt-muted text-sm leading-relaxed min-h-[3rem]">
+<p class="text-txt-muted text-sm leading-relaxed min-h-12">
   {displayedParagraph}
   {#if cursorVisible && displayedParagraph.length < paragraphText.length}
     <span class="typing-cursor">|</span>

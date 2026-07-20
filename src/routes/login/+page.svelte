@@ -2,7 +2,8 @@
     import { onMount } from "svelte";
     import TypingEffect from "$lib/components/TypingEffect.svelte";
     import FlowField from "$lib/components/vfx/FlowField.svelte";
-    import { page } from "$app/state"
+	import { page } from "$app/state";
+	import ThemeController from "$lib/controllers/theme/ThemeController.svelte";
 
     async function handleGoogleSignIn() {
         const googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";
@@ -10,9 +11,12 @@
         // Using Implicit Flow (token/id_token direct response) instead of Authorization Code.
         // We also use the base URL for redirect_uri to avoid mismatch errors if /login isn't whitelisted in GCP.
 
-        const redirectParam = page.url.searchParams.get('redirectUri');
+        const authSuccessRedirectUri = page.url.searchParams.get("redirectUrl") || "/";
 
-        const redirectUri = redirectParam ? redirectParam : window.location.origin;
+        console.log("Auth redirect available");
+        sessionStorage.setItem("auth_redirect", authSuccessRedirectUri);
+
+        const redirectUri = window.location.origin + "/auth/confirm";
 
         const params = new URLSearchParams({
             client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
@@ -25,10 +29,16 @@
         window.location.href = `${googleAuthUrl}?${params.toString()}`;
     }
 
+    let isDark = $state(false);
+
     onMount(() => {
-        console.log("Web Auth Page Mounted");
+        isDark = ThemeController.getInstance().isDark;
     });
 </script>
+
+<svelte:head>
+    <title>CloudsPark - Login</title>
+</svelte:head>
 
 <div class="login-wrapper font-primary overflow-hidden">
     <div class="animated-bg"></div>
@@ -36,7 +46,7 @@
     <FlowField />
 
     <div
-        class="relative w-full h-full flex flex-col justify-center items-center p-12 text-txt-main z-10"
+        class="relative w-full h-full flex flex-col justify-center items-center p-12 text-text-50 z-10"
     >
 
         <!-- Logo and Brand Name -->
@@ -45,17 +55,18 @@
                 <img
                     src="/Icon.png"
                     alt="CloudSpark logo"
-                    class="relative size-24 object-contain select-none transition-transform duration-700 group-hover:scale-110"
+                    class={`relative size-24 object-contain select-none transition-transform duration-700 group-hover:scale-110 ${isDark ? '' : 'invert'}`}
+                
                 />
             </div>
-            <h1 class="font-['Jost'] font-bold text-4xl select-none tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white to-white/60">
-                CloudSpark
+            <h1 class="font-bold text-4xl select-none tracking-tight bg-clip-text text-transparent bg-linear-to-b from-text-900 to-text-700">
+                Cloudspark
             </h1>
         </div>
 
         <!-- Welcome Message with Typing Effect -->
         <div class="mb-12 max-w-sm text-center">
-            <div class="text-txt-muted text-lg font-light tracking-wide">
+            <div class="text-text-800 text-lg font-light tracking-wide">
                 <TypingEffect />
             </div>
         </div>
@@ -69,11 +80,11 @@
                 class="auth-button google-auth w-full flex justify-center"
             >
                 <iconify-icon icon="flat-color-icons:google" width="22" height="22"></iconify-icon>
-                <span>Sign in with Google</span>
+                <span class="text-text-900">Sign in with Google</span>
             </button>
         </div>
 
-        <footer class="absolute bottom-12 w-full text-center text-white/20 text-xs tracking-widest uppercase select-none">
+        <footer class="absolute bottom-12 w-full text-center text-text-600 text-xs tracking-widest uppercase select-none">
             Add your touch.
         </footer>
     </div>
@@ -81,16 +92,16 @@
 
 <style>
     .login-wrapper {
-        position: relative;
-        width: 100vw;
+        width: 100%;
         height: 100vh;
-        background-color: #121212;
+        overflow: hidden;
+        position: relative;
     }
 
     .animated-bg {
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at 50% 50%, #1c1c1c 0%, #121212 70%);
+        background: radial-gradient(circle at 50% 50%, var(--color-background-200) 0%, var(--color-background-50) 70%);
         opacity: 0.5;
         animation: pulse 10s ease-in-out infinite;
     }
@@ -102,7 +113,7 @@
         transform: translateX(-50%);
         width: 100%;
         height: 100%;
-        background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
+        background: radial-gradient(ellipse at top, var(--color-background-100) 0%, transparent 100%);
         pointer-events: none;
     }
 
@@ -116,8 +127,8 @@
         align-items: center;
         gap: 1rem;
         padding: 0.875rem 1.5rem;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: var(--color-background-100);
+        border: 1px solid var(--color-background-200);
         border-radius: 1rem;
         color: white;
         font-weight: 500;
@@ -128,8 +139,8 @@
     }
 
     .auth-button:hover {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.2);
+        background: var(--color-background-200);
+        border-color: var(--color-background-300);
         transform: translateY(-2px);
         box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.5);
     }

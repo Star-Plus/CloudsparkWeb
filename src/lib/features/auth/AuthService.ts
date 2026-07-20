@@ -1,57 +1,81 @@
-import type GoogleLoginRequest from "./Dtos/GoogleLoginRequest";
-import type AuthLoginResponse from "./Dtos/AuthLoginResponse";
-import api from "$lib/utils/api/appApi";
-import User from "./User";
+import { Mockable } from "$lib/utils/mock/Mockable";
+import type { AxiosInstance } from "axios";
+import type LoginResponse from "./dtos/LoginResponse";
+import User from "./User.model";
+import { browser } from "$app/environment";
 
-export default class AuthService {
-
-    private static instance : AuthService;
-
-    private constructor() {
-        this.user = localStorage.getItem("user") ? new User(JSON.parse(localStorage.getItem("user") as string).username) : null;
-    }
-
+export default class AuthService extends Mockable {
+    
     private user: User | null = null;
+    private api: AxiosInstance;
 
-    public static getInstance() : AuthService {
-        if (!AuthService.instance) {
-            AuthService.instance = new AuthService();
+    constructor(api: AxiosInstance) {
+        super();
+        this.api = api;
+        // On initialization, check if we have credentials in localStorage
+        if (browser) {
+            const token = localStorage.getItem("token");
+            const username = localStorage.getItem("username");
+            const userId = localStorage.getItem("userId");
+            if (token && username && userId) {
+                this.user = new User({
+                    id: userId,
+                    username,
+                    token
+                });
+            }
         }
-
-        return AuthService.instance;
     }
 
-    async googleLogin(request: GoogleLoginRequest) : Promise<AuthLoginResponse> {
-        try {
-            const response = await api.post<AuthLoginResponse>("/auth/google", request);
-            this.authenticateUser(response.data.token, new User(response.data.username));
-            return response.data;
-        }
-        catch (error) {
-            throw error;
-        }
-    }
-
-    private authenticateUser(token: string, user: User): void {
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
+    saveCredentials(user: User) {
+        localStorage.setItem("token", user.token);
+        localStorage.setItem("username", user.username);
+        localStorage.setItem("userId", user.id);
         this.user = user;
     }
 
-    public getUser(): User | null {
+    isAuthenticated(): boolean {
+        const token = localStorage.getItem("token");
+        return !!token;
+    }
+
+    getUser(): User | null {
         return this.user;
     }
 
-    public logout(): void {
-        localStorage.removeItem("token");
+    mock_getUser(): User | null {
+        return new User({
+            id: "aejkatappaja",
+            username: "aejkatappaja",
+            token: "aejkatappaja"
+        })
     }
 
-    public isAuthenticated(): boolean {
-        return localStorage.getItem("token") !== null;
-    }
+    async googleSignIn(idToken: string) : Promise<LoginResponse> {
+        try {
+            // Fire off the secure token exchange
+            const response = await this.api.post<LoginResponse>("/auth/google", {
+                idToken
+            });
+            
+            const loginRes = response.data;
 
-    public get token(): string | null {
-        return localStorage.getItem("token");
+            console.log("Backend login successful. Hello,", loginRes.username);
+
+            const user = new User({
+                token: loginRes.token,
+                username: loginRes.username,
+                id: loginRes.id
+            });
+
+            // Store securely in browser layout
+            this.saveCredentials(user);
+
+            return loginRes;
+
+        } catch (err) {
+            throw new Error(`Google Sign-In failed: ${err instanceof Error ? err.message : String(err)}`);
+        }
     }
 
 }
