@@ -13,6 +13,12 @@
 
 </script>
 
+{#if creditsInfo.state == TransferState.LOADING}
+
+<p>Loading...</p>
+
+{:else if creditsInfo.state == TransferState.SUCCESS}
+
 <div class="flex flex-col gap-6 h-full bg-background-100">
     <div class="flex items-center">
         <div class="flex gap-2 items-center">
@@ -44,3 +50,11 @@
     </section>
     
 </div>
+
+{:else}
+
+<div>
+    <p>{creditsInfo.error?.message}</p>
+</div>
+
+{/if}

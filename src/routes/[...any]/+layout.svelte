@@ -8,7 +8,6 @@
 	import { initializeTelemetry } from '$lib/utils/observe/telemetry';
 	import ErrorWindow from '$lib/features/errors/ErrorWindow.svelte';
 	import { AuthContext, setAuthContext } from '$lib/features/auth/AuthContext.svelte';
-	import { useMock } from '$lib/utils/mock/useMock';
 	import AuthService from '$lib/features/auth/AuthService';
 	import appApi from '$lib/utils/apis/appApi';
 
@@ -16,13 +15,9 @@
 
 	let renderNavbar = $state(false);
 
-	const authContext = new AuthContext(useMock<AuthService>(new AuthService(appApi)));
+	const authContext = new AuthContext(new AuthService(appApi));
 
 	setAuthContext(authContext);
-
-	$effect(() => {
-		setAuthContext(authContext);
-	})
 
 	onMount(() => {
 		initializeTelemetry();

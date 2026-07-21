@@ -13,6 +13,7 @@
 	import { page } from "$app/state";
 	import { goto } from "$app/navigation";
 	import ErrorStore from "$lib/features/errors/ErrorStore.svelte";
+	import { TransferState } from "$lib/utils/models/BaseDTO.svelte";
     
     let {creditService} : 
     {creditService: CreditService} = $props();
@@ -55,13 +56,13 @@
             }
     
             let resp = await driveStorageService.fetchPathContents(`${path}`);
-            if (resp.error) throw resp.error;
+            if (resp.state == TransferState.SUCCESS) {
+                VisitedPaths.getInstance().expand(resp.payload!);
+            }
     
-            VisitedPaths.getInstance().expand(resp.payload!);
             return resp;
         }
         catch (err) {
-            ErrorStore.getInstance().add(err as Error);
             throw err;
         }
     }

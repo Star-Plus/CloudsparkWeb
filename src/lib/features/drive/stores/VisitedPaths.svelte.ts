@@ -18,8 +18,6 @@ export default class VisitedPaths {
     public expand(subTree: DirObject) {
         if (!subTree?.path) return;
 
-        console.log("Expanding", subTree);
-
         const normalizedPath = subTree.path.replaceAll("\\", "/");
         const existingNode = this.findNode(normalizedPath);
         const node = existingNode ?? this.createPlaceholder(normalizedPath);

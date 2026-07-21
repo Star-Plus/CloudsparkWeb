@@ -9,6 +9,7 @@
 	import ShareButton from "./ShareButton.svelte";
 	import vcsApi from "$lib/utils/apis/vcsApi";
 	import DownloadButton from "./DownloadButton.svelte";
+	import { TransferState } from "$lib/utils/models/BaseDTO.svelte";
 
     let { openFolder } : { openFolder: (path: string) => Promise<PathObjectDto> } = $props();
 
@@ -48,10 +49,9 @@
 
 <div class="w-full">
 
-    {#if root.error}
-        <p>{root.error.message}</p>
-    {/if}
-    
+{#if root.state == TransferState.LOADING}
+    <p>Loading...</p>
+{:else if root.state == TransferState.SUCCESS}
     {#if root.payload}
         {#if root.payload.contents.length === 0}
             <p>No files found</p>
@@ -122,6 +122,10 @@
         />
     </div>
     {/if}
+
+{:else}
+    <p>{root.error?.message}</p>
+{/if}
     
 
 </div>

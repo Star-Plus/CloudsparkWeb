@@ -2,16 +2,18 @@ import BoxTask from "$lib/features/tasks/BoxTask.svelte";
 import ConfirmableTask from "$lib/features/tasks/ConfirmableTask.svelte";
 import ProgressingTask from "$lib/features/tasks/ProgressingTask.svelte";
 import TaskManager from "$lib/features/tasks/TaskManager.svelte";
+import { Mockable } from "$lib/utils/mock/Mockable";
 import { logger } from "$lib/utils/observe/telemetry";
 import type { AxiosInstance } from "axios"
 
-export default class UploadAgent {
+export default class UploadAgent extends Mockable {
     
     private api: AxiosInstance;
     private socketBaseUrl?: string;
     private vcsUrl?: string;
 
     constructor(api: AxiosInstance, socketUrl?: string, vcsUrl?: string) {
+        super();
         this.api = api;
         this.socketBaseUrl = socketUrl;
         this.vcsUrl = vcsUrl;
@@ -191,5 +193,9 @@ export default class UploadAgent {
             params: { filepath }
         });
         if (resp.status !== 200) throw new Error(resp.data);
+    }
+
+    public async error_uploadFile(_: string) {
+        throw new Error("Failed to upload file");
     }
 }
