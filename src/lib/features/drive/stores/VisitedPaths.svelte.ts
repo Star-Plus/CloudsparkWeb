@@ -18,7 +18,9 @@ export default class VisitedPaths {
     public expand(subTree: DirObject) {
         if (!subTree?.path) return;
 
-        const normalizedPath = this.normalizePath(subTree.path);
+        console.log("Expanding", subTree);
+
+        const normalizedPath = subTree.path.replaceAll("\\", "/");
         const existingNode = this.findNode(normalizedPath);
         const node = existingNode ?? this.createPlaceholder(normalizedPath);
 
@@ -51,11 +53,6 @@ export default class VisitedPaths {
         return null;
     }
 
-    private normalizePath(path: string): string {
-        if (!path || path === "/") return "/";
-        return path.startsWith("/") ? path : `/${path}`;
-    }
-
     private findNode(path: string): DirObject | undefined {
         return this.visited.find((c) => c.path === path);
     }
@@ -68,7 +65,7 @@ export default class VisitedPaths {
             name,
             path,
             size: 0,
-            type: "dir",
+            type: "folder",
             version: "",
             contents: [],
             count: 0,

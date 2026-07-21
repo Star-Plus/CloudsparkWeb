@@ -1,11 +1,11 @@
 <script lang="ts">
     import Icon from "@iconify/svelte";
-    import type { DirObject } from "../dtos/DirObject";
+    import type { DirObject, PathObjectDto } from "../dtos/DirObject";
     import TreeNode from "./TreeFileNode.svelte";
 
     let { node, expandPath, depth = 0 } : {
         node: DirObject;
-        expandPath: (path: string) => Promise<DirObject>;
+        expandPath: (path: string) => Promise<PathObjectDto>;
         depth?: number;
     } = $props();
 
@@ -28,7 +28,7 @@
             loading = true;
             try {
                 const fetched = await expandPath(node.path);
-                children = fetched.contents ?? [];
+                children = fetched.payload?.contents ?? [];
             } finally {
                 loading = false;
             }
@@ -54,11 +54,11 @@
                 </button>
             {/if}
             <!-- Special Folders -->
-            {#if node.path == "/vault"}
+            {#if node.path.endsWith("/vault")}
                 <span class="material-symbols-rounded">
                     cloud_lock
                 </span>
-            {:else if node.path == "/shared"}
+            {:else if node.path.endsWith("/shared")}
                 <span class="material-symbols-rounded">
                     folder_shared
                 </span>

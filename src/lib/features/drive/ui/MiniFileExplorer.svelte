@@ -1,10 +1,10 @@
 <script lang="ts">
-    import type {DirObject} from "../dtos/DirObject";
+    import type {DirObject, PathObjectDto} from "../dtos/DirObject";
 	import { onMount } from "svelte";
 	import TreeFileNode from "./TreeFileNode.svelte";
 
     let {root, expandPath} : 
-    {root: DirObject, expandPath: (nestedPath: string) => Promise<DirObject>} = $props();
+    {root: DirObject, expandPath: (nestedPath: string) => Promise<PathObjectDto>} = $props();
 
     let tree =  $state<Map<string, DirObject>>(new Map<string, DirObject>());
 

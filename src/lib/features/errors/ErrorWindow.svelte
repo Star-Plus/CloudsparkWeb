@@ -10,6 +10,7 @@
         <div>
             <button class="text-red-500" onclick={() => errorStore.remove(i)}>X</button>
             <p class="text-red-500">{error.message}</p>
+            <p class="text-red-500">{error.cause}</p>
         </div>
     {/each}
 </div>

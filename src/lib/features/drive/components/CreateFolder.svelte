@@ -1,6 +1,7 @@
 <script lang="ts">
 
     import { page } from "$app/state";
+	import ErrorStore from "$lib/features/errors/ErrorStore.svelte";
 	import { getDriveStorageContext } from "../contexts/DriveStorageContext.svelte";
 
     let owner = $derived(page.params.path?.split("/")[0] || "");
@@ -22,6 +23,7 @@
         }
         catch (err) {
             console.error(err);
+            ErrorStore.getInstance().add(new Error("Failed to create folder"));
         }
     }
 

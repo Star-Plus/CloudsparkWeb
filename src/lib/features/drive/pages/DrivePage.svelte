@@ -12,6 +12,7 @@
 	import ExplorerHeader from "../ui/ExplorerHeader.svelte";
 	import { page } from "$app/state";
 	import { goto } from "$app/navigation";
+	import ErrorStore from "$lib/features/errors/ErrorStore.svelte";
     
     let {creditService} : 
     {creditService: CreditService} = $props();
@@ -38,21 +39,31 @@
 
         creditService.fetchCredits(`${user?.username}`).then((dto) => (creditsInfo = dto));
         openPath(`${user?.username}`).then((dto) => {
-            rootSelfPathContens.setPayload(dto);
+            rootSelfPathContens = dto;
         });
     })
 
-    async function openPath(path: string) : Promise<DirObject> {
-        if (path == "/" || path == "") path = `${user?.username}`;
-
-        const cached = VisitedPaths.getInstance().getPathObject(path);
-        if (cached) return cached;
-
-        let resp = await driveStorageService.fetchPathContents(`${path}`);
-        if (resp.error) throw resp.error;
-
-        VisitedPaths.getInstance().expand(resp.payload!);
-        return resp.payload!;
+    async function openPath(path: string) : Promise<PathObjectDto> {
+        try {
+            if (path == "/" || path == "") path = `${user?.username}`;
+    
+            const cached = VisitedPaths.getInstance().getPathObject(path);
+            if (cached) {
+                const dto = new PathObjectDto();
+                dto.setPayload(cached);
+                return dto;
+            }
+    
+            let resp = await driveStorageService.fetchPathContents(`${path}`);
+            if (resp.error) throw resp.error;
+    
+            VisitedPaths.getInstance().expand(resp.payload!);
+            return resp;
+        }
+        catch (err) {
+            ErrorStore.getInstance().add(err as Error);
+            throw err;
+        }
     }
 
 </script>

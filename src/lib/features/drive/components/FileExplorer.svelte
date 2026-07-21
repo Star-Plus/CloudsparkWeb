@@ -10,14 +10,14 @@
 	import vcsApi from "$lib/utils/apis/vcsApi";
 	import DownloadButton from "./DownloadButton.svelte";
 
-    let { openFolder } : { openFolder: (path: string) => Promise<DirObject> } = $props();
+    let { openFolder } : { openFolder: (path: string) => Promise<PathObjectDto> } = $props();
 
     let subPathQuery = $derived(page.params.path || "/");
     let root = $state<PathObjectDto>(new PathObjectDto());
 
     $effect(() => {
-        openFolder(subPathQuery).then((resp) => {
-            root.setPayload(resp);
+        openFolder(subPathQuery).then((dto) => {
+            root = dto;
         })
     })
 
@@ -25,7 +25,13 @@
 
     async function handleOpenFile(dir: DirObject) {
         if (dir.type === "folder") {
-            goto(`/drive/${dir.path}`);
+            const oldUrl = page.url.pathname;
+            if (oldUrl.startsWith("/preview/")) {
+                goto(`/preview/drive/${dir.path}`);
+            }
+            else {
+                goto(`/drive/${dir.path}`);
+            }
         }
         else {
             fileToPreview = `${dir.path}/${dir.version}/${dir.type.split("/")[0]}`;
@@ -41,6 +47,10 @@
 </script>
 
 <div class="w-full">
+
+    {#if root.error}
+        <p>{root.error.message}</p>
+    {/if}
     
     {#if root.payload}
         {#if root.payload.contents.length === 0}

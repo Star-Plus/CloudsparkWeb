@@ -45,9 +45,9 @@ export default class AuthService extends Mockable {
 
     mock_getUser(): User | null {
         return new User({
-            id: "aejkatappaja",
-            username: "aejkatappaja",
-            token: "aejkatappaja"
+            id: "ahmed",
+            username: "ahmed",
+            token: "ahmed"
         })
     }
 
