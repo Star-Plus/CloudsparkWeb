@@ -1,5 +1,6 @@
 export class Mockable {
   #mock: boolean;
+  #prefix = "mock_";
  
   constructor(mock = false) {
     this.#mock = mock;
@@ -11,7 +12,7 @@ export class Mockable {
         // Only intercept callable, non-internal, non-mock_ members
         if (
           typeof value !== "function" ||
-          prop.startsWith("mock_") ||
+          prop.startsWith(this.#prefix) ||
           prop.startsWith("#") ||
           prop === "constructor"
         ) {
@@ -20,7 +21,7 @@ export class Mockable {
  
         return (...args: unknown[]) => {
           if (target.#mock) {
-            const mockFn = (target as Record<string, unknown>)[`mock_${prop}`];
+            const mockFn = (target as Record<string, unknown>)[`${this.#prefix}${prop}`];
             if (typeof mockFn === "function") {
               return (mockFn as (...a: unknown[]) => unknown).apply(
                 target,
@@ -30,7 +31,7 @@ export class Mockable {
             // No mock twin found — fall through to real, warn in dev
             if (import.meta.env?.DEV) {
               console.warn(
-                `[Mockable] mock_${prop} not found on ${target.constructor.name}. Falling back to real implementation.`
+                `[Mockable] ${this.#prefix}${prop} not found on ${target.constructor.name}. Falling back to real implementation.`
               );
             }
           }
@@ -50,5 +51,9 @@ export class Mockable {
 
   unmock() {
     this.#mock = false;
+  }
+
+  setMockPrefix(prefix: string) {
+    this.#prefix = prefix;
   }
 }
