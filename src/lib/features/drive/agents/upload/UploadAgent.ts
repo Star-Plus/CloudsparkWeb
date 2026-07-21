@@ -2,6 +2,7 @@ import BoxTask from "$lib/features/tasks/BoxTask.svelte";
 import ConfirmableTask from "$lib/features/tasks/ConfirmableTask.svelte";
 import ProgressingTask from "$lib/features/tasks/ProgressingTask.svelte";
 import TaskManager from "$lib/features/tasks/TaskManager.svelte";
+import { logger } from "$lib/utils/observe/telemetry";
 import type { AxiosInstance } from "axios"
 
 export default class UploadAgent {
@@ -29,6 +30,7 @@ export default class UploadAgent {
         }
     }
 
+
     public async uploadFile(src: string, dest: string) {
         try {
             const repoPath = dest.split("/").slice(0, 2).join("/");
@@ -50,8 +52,8 @@ export default class UploadAgent {
             await this.wash(repoPath);
             await this.prepareAsset(repoPath, src, relativePath);
         }
-        catch (err) {
-            console.error(err);
+        catch (err: any) {
+            logger.error(err.message);
             throw err;
         }
     }
@@ -114,6 +116,14 @@ export default class UploadAgent {
                             else {
                                 console.error("Unknown task:", task);
                             }
+                            break;
+                        }
+                        case "error": {
+                            boxTask.raiseError(new Error(data.message));
+                            break;
+                        }
+                        default: {
+                            console.error("Unknown message type:", data.type);
                             break;
                         }
                     }

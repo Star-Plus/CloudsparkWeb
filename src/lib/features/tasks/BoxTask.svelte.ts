@@ -4,6 +4,7 @@ export default class BoxTask implements ITask {
     action: string;
     closed = $state<boolean>(false);
     subtasks = $state<ITask[]>([]);
+    error = $state<Error | null>(null);
 
     constructor(action: string, subtasks: ITask[] = []) {
         this.action = action;
@@ -29,5 +30,9 @@ export default class BoxTask implements ITask {
 
     isDone(): boolean {
         return this.closed && this.subtasks.every(subtask => subtask.isDone());
+    }
+
+    raiseError(error: Error) {
+        this.error = error;
     }
 }

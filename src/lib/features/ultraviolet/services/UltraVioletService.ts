@@ -26,7 +26,7 @@ export default class UltraVioletService extends Mockable {
 
     async mock_fetchFastPreviewUrl(_: string, __: string, ___: string) : Promise<FastPreviewDto> {
         const dto = new FastPreviewDto();
-        dto.setPayload({url: "https://www.historyhit.com/app/uploads/2022/08/Leonhard_Euler-Cover-Image.jpg", type: "image/jpeg"});
+        dto.setPayload({previewUrl: "https://www.historyhit.com/app/uploads/2022/08/Leonhard_Euler-Cover-Image.jpg"});
         return dto;
     }
 }

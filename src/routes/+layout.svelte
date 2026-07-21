@@ -7,6 +7,7 @@
 	import { onMount } from 'svelte';
 	import ThemeContext from '$lib/controllers/theme/ThemeContext.svelte';
 	import { initializeTelemetry } from '$lib/utils/observe/telemetry';
+	import ErrorWindow from '$lib/features/errors/ErrorWindow.svelte';
 
 	let { children } = $props();
 
@@ -39,5 +40,7 @@
 	{:else}
 		{@render children()}
 	{/if}
+
+	<ErrorWindow />
 
 </main>
