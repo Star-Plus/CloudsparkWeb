@@ -1,7 +1,6 @@
 <script lang="ts">
 
     import { page } from "$app/state";
-	import ErrorStore from "$lib/features/errors/ErrorStore.svelte";
 	import { getDriveStorageContext } from "../contexts/DriveStorageContext.svelte";
 
     let owner = $derived(page.params.path?.split("/")[0] || "");
@@ -13,18 +12,31 @@
 
     let folderName = $state("");
 
+    let error = $state<string | null>(null);
+    let isLoading = $state(false);
+
     async function handleOnSubmit(e: Event) {
         try {
+            isLoading = true;
             e.preventDefault();
             const parentPath = subPathQuery.split("/").slice(2)
             const dest = parentPath.length > 0 ? `${parentPath}/${folderName}` : folderName;
             await driveStorageService.createFolder(`${owner}/vault`, dest);
             isCreatingFolder = false;
         }
-        catch (err) {
+        catch (err: any) {
             console.error(err);
-            ErrorStore.getInstance().add(new Error("Failed to create folder"));
+            error = err.message;
         }
+        finally {
+            isLoading = false;
+        }
+    }
+
+    async function handleCancel() {
+        isCreatingFolder = false;
+        isLoading = false;
+        error = null;
     }
 
 </script>
@@ -37,10 +49,17 @@
 </button>
 
 {#if isCreatingFolder}
-<div class="fixed top-0 left-0 w-full h-full bg-background-100/50 flex items-center justify-center">
-    <form onsubmit={handleOnSubmit}>
-        <input bind:value={folderName} type="text" placeholder="Folder name"/>
-        <button type="submit">Create</button>
-    </form>
+<div class="fixed top-1/2 left-1/2 -translate-1/2 w-fit h-fit bg-background-200 p-3 flex flex-col items-center justify-center">
+    <button onclick={handleCancel}>Close</button>
+    {#if isLoading}
+        <p>Loading...</p>
+    {:else if error}
+        <p>{error}</p>
+    {:else}
+        <form onsubmit={handleOnSubmit}>
+            <input bind:value={folderName} type="text" placeholder="Folder name"/>
+            <button type="submit">Create</button>
+        </form>
+    {/if}
 </div>
 {/if}
