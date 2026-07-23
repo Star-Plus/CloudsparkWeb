@@ -59,11 +59,15 @@
 </script>
 
 <div bind:this={container} class="max-w-full h-full">
+
     {#if mediaType == "image"}
     <ImageScreen imageUrl={previewUrl} />
     {:else if mediaType == "text"}
     <TextBook fileUrl={previewUrl} />
     {:else}
-        <p class="text-center text-text-600">Unsupported media "{mediaType}" type</p>
+        <div class="flex flex-col w-full gap-2 items-center justify-center h-full text-center text-text-900 bg-background-100/90">
+            <span class="material-symbols-rounded text-5xl!">question_mark</span>
+            <p>Unsupported media "{mediaType}" type</p>
+        </div>
     {/if}
 </div>

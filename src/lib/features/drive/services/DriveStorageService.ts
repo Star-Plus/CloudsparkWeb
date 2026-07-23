@@ -71,11 +71,18 @@ export default class DriveStorageService extends Mockable {
             dto.setPayload(<DirObject>{
                 name: "vault",
                 path: "ahmed/vault",
-                contents: [{
-                    name: "final",
-                    path: "ahmed/vault/final",
-                    type: "file",
-                }],
+                contents: [
+                    {
+                        name: "final",
+                        path: "ahmed/vault/final",
+                        type: "file",
+                    },
+                    {
+                        name: "dir",
+                        path: "ahmed/vault/dir",
+                        type: "folder",
+                    }
+                ],
                 count: 1
             });
         }
@@ -91,6 +98,15 @@ export default class DriveStorageService extends Mockable {
                     },
                 ],
                 count: 0
+            });
+        }
+        else if (path == "ahmed/vault/dir") {
+            dto.setPayload(<DirObject>{
+                name: "dir",
+                path: "ahmed/vault/dir",
+                contents: [] as DirObject[],
+                count: 0,
+                type: "folder"
             });
         }
         else throw new Error(`Path not found: ${path}`);

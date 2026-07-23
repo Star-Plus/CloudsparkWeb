@@ -1,7 +1,13 @@
 <script lang="ts">
-	import Icon from "@iconify/svelte";
-
-    let {type} : {type: string} = $props();
+    let {type, classes} : {type: string, classes?: string} = $props();
 </script>
 
-<Icon icon="fluent:document-20-filled" class="text-background-800 text-lg" />
+{#if type === "folder"}
+<span class={`material-symbols-rounded text-primary-500 ${classes ?? ""}`}>
+    folder
+</span>
+{:else}
+<span class={`material-symbols-rounded text-secondary-500 ${classes ?? ""}`}>
+    insert_drive_file
+</span>
+{/if}

@@ -10,6 +10,7 @@
 	import vcsApi from "$lib/utils/apis/vcsApi";
 	import DownloadButton from "./DownloadButton.svelte";
 	import { TransferState } from "$lib/utils/models/BaseDTO.svelte";
+	import RecentFilesStore from "../stores/RecentFilesStore.svelte";
 
     let { openFolder } : { openFolder: (path: string) => Promise<PathObjectDto> } = $props();
 
@@ -19,6 +20,9 @@
     $effect(() => {
         openFolder(subPathQuery).then((dto) => {
             root = dto;
+            if (dto.payload) {
+                RecentFilesStore.getInstance().add(dto.payload);
+            }
         })
     })
 
@@ -67,11 +71,11 @@
 {:else if root.state == TransferState.SUCCESS}
     {#if root.payload}
 
-        <div class="flex items-center mb-4 px-3">
+        <div class="flex items-center mb-4">
             {#if root.payload.path !== "/"}
                 <button
                     onclick={handleGoBack}
-                    class="flex items-center justify-center rounded hover:bg-muted p-1 -ml-1 mr-1"
+                    class="flex items-center justify-center rounded hover:bg-muted mr-1"
                     aria-label="Go back"
                 >
                     <Icon icon="fluent:arrow-left-12-regular" class="text-primary-500 text-xl" />
@@ -120,16 +124,8 @@
 
                     <div class="flex-1 min-w-0 py-2.5">
                         <button onclick={() => handleOpenFile(child)} class="flex gap-2.5 items-center text-base font-medium w-full text-left">
-                            {#if child.type === "folder"}
-                                <span class="material-symbols-rounded text-primary-500">
-                                    folder
-                                </span>
-                                <p class="truncate">{child.name}</p>
-                                {:else}
-                                <!-- TODO: Ultraviolet -->
-                                <FileIconSelector type={child.type} />
-                                <span class="truncate">{child.name}</span>
-                            {/if}
+                            <FileIconSelector type={child.type} />
+                            <span class="truncate">{child.name}</span>
                         </button>
                     </div>
 

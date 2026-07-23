@@ -2,6 +2,7 @@
     import Icon from "@iconify/svelte";
     import type { DirObject, PathObjectDto } from "../dtos/DirObject";
     import TreeNode from "./TreeFileNode.svelte";
+	import { page } from "$app/state";
 
     let { node, expandPath, depth = 0 } : {
         node: DirObject;
@@ -12,6 +13,9 @@
     let expanded = $state(false);
     let children = $derived<DirObject[]>(node.contents ?? []);
     let loading = $state(false);
+
+    let subPathQuery = $derived(page.params.path || "/");
+    let isActiveNode = $derived(node.path === subPathQuery);
 
     // svelte-ignore state_referenced_locally
     const isDir = node.type === "folder";
@@ -39,7 +43,7 @@
 </script>
 
 <div style="padding-left: {depth * 1}rem">
-    <div class="flex items-center gap-1 w-full hover:bg-muted rounded px-1 py-0.5" style={depth === 0 ? "font-size: 1.3rem" : "font-size: 1.1rem"}>
+    <div class="flex items-center gap-1 w-full hover:bg-muted rounded px-1 py-0.5" class:active={isActiveNode} style={depth === 0 ? "font-size: 1.2rem" : "font-size: 1.1rem"}>
         {#if isDir}
             {#if loading}
                 <Icon icon="material-symbols:progress-activity" class="animate-spin text-sm" />
@@ -84,3 +88,9 @@
         {/each}
     {/if}
 </div>
+
+<style>
+    .active {
+        background-color: var(--color-background-200);
+    }
+</style>

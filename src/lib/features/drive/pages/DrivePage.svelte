@@ -3,9 +3,9 @@
 	import { CreditsInfoDto } from "../dtos/CreditsInfo";
 	import type CreditService from "../services/CreditService";
 	import DriveSidebar from "../ui/DriveSidebar.svelte";
-	import { PathObjectDto, type DirObject } from "../dtos/DirObject";
+	import { PathObjectDto } from "../dtos/DirObject";
 	import VisitedPaths from "../stores/VisitedPaths.svelte";
-	import MiniFileExplorer from "../ui/MiniFileExplorer.svelte";
+	import MiniFileExplorer from "../components/MiniFileExplorer.svelte";
 	import FileExplorer from "../components/FileExplorer.svelte";
 	import { getDriveStorageContext } from "../contexts/DriveStorageContext.svelte";
 	import { getAuthContext } from "$lib/features/auth/AuthContext.svelte";
@@ -13,6 +13,7 @@
 	import { page } from "$app/state";
 	import { goto } from "$app/navigation";
 	import { TransferState } from "$lib/utils/models/BaseDTO.svelte";
+	import RecentFiles from "../components/RecentFiles.svelte";
     
     let {creditService} : 
     {creditService: CreditService} = $props();
@@ -83,6 +84,7 @@
 
     <div class="h-full flex-1 p-8 relative">
         <ExplorerHeader />
+        <RecentFiles />
         <FileExplorer openFolder={openPath} />
     </div>
 </div>
