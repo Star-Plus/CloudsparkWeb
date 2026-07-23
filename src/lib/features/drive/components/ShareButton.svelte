@@ -1,41 +1,35 @@
 <script lang="ts">
 	import ShareObjectForm from "./ShareObjectForm.svelte";
-	import { onMount } from "svelte";
 
     let {objectPath} : {objectPath: string} = $props();
 
     let isSharing = $state(false);
     let shareForm = $state<HTMLDivElement>();
 
-    let clickDecayTimer = 500;
+    function handleClickShareButton() {
+        isSharing = true;
+    }
 
-    onMount(() => {
-        window.addEventListener('click', (e) => {
-            if (!shareForm?.contains(e.target as Node) && clickDecayTimer <= 0) {
-                console.log("Clicked outside share form");
+    $effect(() => {
+        if (!isSharing) return;
+
+        function handleClickOutside(e: MouseEvent) {
+            if (shareForm && !shareForm.contains(e.target as Node)) {
                 isSharing = false;
             }
-            else {
-                clickDecayTimer += 50;
-            }
-        })
-    })
-
-
-    function toggleSharing() {
-        clickDecayTimer = 500;
-        isSharing = !isSharing;
-
-        if (isSharing) {
-            setTimeout(() => {
-                clickDecayTimer = 0;
-            }, 500);
         }
-    }
+
+        const id = setTimeout(() => window.addEventListener('click', handleClickOutside), 0);
+
+        return () => {
+            clearTimeout(id);
+            window.removeEventListener('click', handleClickOutside);
+        };
+    })
 
 </script>
 
-<button onclick={toggleSharing}>
+<button onclick={handleClickShareButton}>
     <span class="material-symbols-rounded">
     group_add
     </span>

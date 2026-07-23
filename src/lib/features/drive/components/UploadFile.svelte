@@ -34,7 +34,7 @@
 
 </script>
 
-<button class="flex items-center bg-background-200 hover:bg-background-300 py-2 px-4 rounded" onclick={handleFileInput}>
+<button class="flex items-center bg-background-200/50 hover:bg-background-300 py-2 px-4 rounded text-md!" onclick={handleFileInput}>
     <span class="material-symbols-rounded mr-2">
         upload
     </span>

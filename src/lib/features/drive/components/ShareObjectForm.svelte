@@ -28,6 +28,13 @@
 
     let response = $state<ShareVaultObjectResponse|null>(null);
 
+    const permissionOptions = [
+        { value: "preview", label: "Take a look", hint: "Can preview only", icon: "gallery_thumbnail" },
+        { value: "read", label: "Read", hint: "Can view and download", icon: "visibility" },
+        { value: "write", label: "Write", hint: "Can edit contents", icon: "edit" },
+        { value: "share", label: "Share", hint: "Can invite others", icon: "group_add" },
+    ];
+
     async function handleOnSubmit(e: Event) {
         e.preventDefault();
 
@@ -103,29 +110,86 @@
     })
 </script>
 
-{#if response}
-    {#if response.state == TransferState.LOADING}
-        <p>Loading...</p>
-    {:else if response.state == TransferState.SUCCESS}
-        <p>{response.payload}</p>
+<div class="w-90 flex flex-col gap-4 bg-background-50 rounded-sm p-5">
+
+    {#if response}
+        <div class="flex flex-col items-center gap-3 py-6 text-center">
+            {#if response.state == TransferState.LOADING}
+                <span class="material-symbols-rounded animate-spin text-3xl text-text-500">progress_activity</span>
+                <p class="text-text-600">Sharing…</p>
+            {:else if response.state == TransferState.SUCCESS}
+                <span class="material-symbols-rounded text-3xl text-primary-500">check_circle</span>
+                <p class="text-text-900">{response.payload}</p>
+            {:else}
+                <span class="material-symbols-rounded text-3xl text-red-500">error</span>
+                <p class="text-text-900">{response.error}</p>
+            {/if}
+        </div>
     {:else}
-        <p>{response.error}</p>
+
+    <div class="flex flex-col gap-1">
+        <h3 class="font-medium text-text-900">Share file</h3>
+        <p class="text-sm text-text-600 truncate">{objectPath.split("/").pop()}</p>
+    </div>
+
+    <form class="flex flex-col gap-4" onsubmit={handleOnSubmit}>
+
+        <label class="flex flex-col gap-1.5">
+            <span class="text-sm font-medium text-text-700">Share with</span>
+            <input
+                bind:value={shareRequestPayload!.shareWith}
+                type="text"
+                placeholder="Email or username"
+                class="w-full px-3 py-2 rounded-sm border-2 border-background-200 bg-background-50 text-text-900 placeholder:text-text-500 outline-none focus:border-primary-400 transition-colors"
+            >
+        </label>
+
+        <div class="flex flex-col gap-1.5">
+            <span class="text-sm font-medium text-text-700">Permission</span>
+            <div class="flex flex-col gap-1.5">
+                {#each permissionOptions as option}
+                <label
+                    class="flex items-center gap-3 px-3 py-2 rounded-sm border-2 cursor-pointer transition-colors {permissionRoleSelection === option.value
+                        ? 'border-primary-400 bg-primary-50'
+                        : 'border-background-200 hover:bg-background-100'}"
+                >
+                    <input
+                        type="radio"
+                        name="permission"
+                        value={option.value}
+                        bind:group={permissionRoleSelection}
+                        class="accent-primary-500"
+                    >
+                    <span class="material-symbols-rounded text-lg {permissionRoleSelection === option.value ? 'text-primary-600' : 'text-text-500'}">
+                        {option.icon}
+                    </span>
+                    <span class="flex flex-col">
+                        <span class="text-sm font-medium text-text-900">{option.label}</span>
+                        <span class="text-xs text-text-500">{option.hint}</span>
+                    </span>
+                </label>
+                {/each}
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+            <button
+                type="button"
+                onclick={onClose}
+                class="px-4 py-2 rounded-sm text-text-700 hover:bg-background-100 transition-colors"
+            >
+                Cancel
+            </button>
+            <button
+                type="submit"
+                disabled={!validator.isValid}
+                class="px-4 py-2 rounded-sm bg-primary-500 text-white font-medium hover:bg-primary-600 disabled:bg-background-200 disabled:text-text-500 disabled:cursor-not-allowed transition-colors"
+            >
+                Share
+            </button>
+        </div>
+
+    </form>
     {/if}
-{:else}
 
-<form onsubmit={handleOnSubmit}>
-    <p>Share "{objectPath.split("/").pop()}"</p>
-    <input bind:value={shareRequestPayload!.shareWith} type="text" placeholder="Share with">
-
-    <select bind:value={permissionRoleSelection}>
-        <option value="share">Share</option>
-        <option value="write">Write</option>
-        <option value="read">Read</option>
-        <option value="preview">Take a look</option>
-    </select>
-
-    {#if validator.isValid }
-        <button onclick={handleOnSubmit}>Share</button>
-    {/if}
-</form>
-{/if}
+</div>
