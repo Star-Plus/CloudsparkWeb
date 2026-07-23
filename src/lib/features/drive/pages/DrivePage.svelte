@@ -12,7 +12,6 @@
 	import ExplorerHeader from "../ui/ExplorerHeader.svelte";
 	import { page } from "$app/state";
 	import { goto } from "$app/navigation";
-	import ErrorStore from "$lib/features/errors/ErrorStore.svelte";
 	import { TransferState } from "$lib/utils/models/BaseDTO.svelte";
     
     let {creditService} : 
@@ -68,6 +67,11 @@
     }
 
 </script>
+
+<svelte:head>
+	<title>Euler - Drive</title>
+</svelte:head>
+
 <div class="h-full flex">
     <aside class="w-fit h-full border-r border-background-300 px-6 pt-8 bg-background-100">
         <DriveSidebar {creditsInfo}>

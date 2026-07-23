@@ -15,10 +15,6 @@
 
 </script>
 
-<svelte:head>
-	<title>CloudsPark - Drive</title>
-</svelte:head>
-
 <ProtectedRoute>
 	<DrivePage 
 		creditService={new CreditService(appApi)} 

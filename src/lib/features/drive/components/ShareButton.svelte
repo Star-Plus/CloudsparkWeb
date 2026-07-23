@@ -37,7 +37,7 @@
 
 <button onclick={toggleSharing}>
     <span class="material-symbols-rounded">
-    send
+    group_add
     </span>
 </button>
 

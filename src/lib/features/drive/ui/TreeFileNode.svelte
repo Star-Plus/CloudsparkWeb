@@ -39,9 +39,8 @@
 </script>
 
 <div style="padding-left: {depth * 1}rem">
-    <div class="flex items-center gap-1 w-full hover:bg-muted rounded px-1 py-0.5 text-md">
+    <div class="flex items-center gap-1 w-full hover:bg-muted rounded px-1 py-0.5" style={depth === 0 ? "font-size: 1.3rem" : "font-size: 1.1rem"}>
         {#if isDir}
-        
             {#if loading}
                 <Icon icon="material-symbols:progress-activity" class="animate-spin text-sm" />
             {:else}
@@ -54,26 +53,26 @@
                 </button>
             {/if}
             <!-- Special Folders -->
-            {#if node.path.endsWith("/vault")}
+            {#if node.path.endsWith("/vault") && depth === 0}
                 <span class="material-symbols-rounded">
                     cloud_lock
                 </span>
-            {:else if node.path.endsWith("/shared")}
+            {:else if node.path.endsWith("/shared") && depth === 0}
                 <span class="material-symbols-rounded">
                     folder_shared
                 </span>
             {:else}
-                <Icon icon="fluent:folder-20-filled" class="text-primary-500 text-lg" />
+                <Icon icon="fluent:folder-20-filled" class="text-primary-500" />
             {/if}
             
         {:else}
             <!-- svelte-ignore element_invalid_self_closing_tag -->
             <span class="w-4" /> <!-- spacer to align with folders -->
-            <Icon icon="fluent:document-20-filled" class="text-background-800 text-lg" />
+            <Icon icon="fluent:document-20-filled" class="text-background-800" />
         {/if}
 
         {#if node.path == "/vault" || node.path == "/shared" || node.path == "/"}
-        <span class="truncate text-lg font-medium">{node.name}</span>
+        <span class="truncate font-medium">{node.name}</span>
         {:else}
         <span class="truncate">{node.name}</span>
         {/if}

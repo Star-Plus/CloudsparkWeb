@@ -21,6 +21,6 @@
 
 <button type="button" onclick={handleOnClick}>
     <span class="material-symbols-rounded">
-    arrow_circle_down
+    download
     </span>
 </button>

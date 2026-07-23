@@ -28,9 +28,9 @@
     
     <div class="flex items-center gap-3">
         <a class="bg-background-950 rounded-circle p-1" href="/">
-            <img src="/Icon.png" alt="CloudSpark Logo" class="size-7 dark:invert" />
+            <img src="/Icon.png" alt="Euler Logo" class="size-7 dark:invert" />
         </a>
-        <p class="font-bold">CloudSpark</p>
+        <p class="font-bold">Euler</p>
     </div>
 
     <div class="h-full flex items-center gap-1">

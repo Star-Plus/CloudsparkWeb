@@ -11,10 +11,6 @@
 	setDriveStorageContext(driveContext);
 </script>
 
-<svelte:head>
-	<title>CloudsPark - Drive</title>
-</svelte:head>
-
 <DrivePage 
 	creditService={useMock<CreditService>(new CreditService(appApi))} 
 />
