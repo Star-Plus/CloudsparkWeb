@@ -5,6 +5,7 @@
 	import { DriveStorageContext, setDriveStorageContext } from "$lib/features/drive/contexts/DriveStorageContext.svelte";
 	import appApi from "$lib/utils/apis/appApi";
 	import { useMock } from "$lib/utils/mock/useMock";
+	import SimulationTaskButton from "$lib/features/drive/testing/SimulationTaskButton.svelte";
 
 	const driveContext = new DriveStorageContext(useMock<DriveStorageService>(new DriveStorageService(appApi)));
 
@@ -14,3 +15,5 @@
 <DrivePage 
 	creditService={useMock<CreditService>(new CreditService(appApi))} 
 />
+
+<SimulationTaskButton />

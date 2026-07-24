@@ -7,9 +7,7 @@ export default class TaskManager {
 
     private static instance: TaskManager
     private constructor() {
-        if (!window) throw new Error('TaskManager can only be initialized in the browser');
         TaskManager.instance = this;
-
         setInterval(() => !this.locked && this.runTasks(), 1000);
     }
 
@@ -26,10 +24,9 @@ export default class TaskManager {
 
     async runTasks() {
         this.locked = true;
-        for (const task of this.tasks) {
-            if (task.isDone()) {
-                this.tasks = this.tasks.filter(t => t !== task);
-            }
+        const remaining = this.tasks.filter(t => !t.isDone());
+        if (remaining.length !== this.tasks.length) {
+            this.tasks = remaining;
         }
         this.locked = false;
     }

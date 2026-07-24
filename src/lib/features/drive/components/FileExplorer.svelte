@@ -72,13 +72,15 @@
     {#if root.payload}
 
         <div class="flex items-center mb-4">
-            {#if root.payload.path !== "/"}
+            {#if root.payload.path.split('/').length >= 2}
                 <button
                     onclick={handleGoBack}
                     class="flex items-center justify-center rounded hover:bg-muted mr-1"
                     aria-label="Go back"
                 >
-                    <Icon icon="fluent:arrow-left-12-regular" class="text-primary-500 text-xl" />
+                    <span class="material-symbols-rounded text-primary-500 text-xl" >                    
+                        arrow_back
+                    </span>
                 </button>
             {/if}
             <span class="font-medium">All files / </span>

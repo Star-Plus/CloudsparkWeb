@@ -1,6 +1,7 @@
 import type ITask from "./ITask";
 
 export default class ProgressingTask implements ITask {
+    public id = crypto.randomUUID();
     public action: string;
     public progress = $state(0);
     public total: number;

@@ -1,6 +1,7 @@
 import type ITask from "./ITask";
 
 export default class BoxTask implements ITask {
+    id = crypto.randomUUID();
     action: string;
     closed = $state<boolean>(false);
     subtasks = $state<ITask[]>([]);

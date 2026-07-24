@@ -1,6 +1,7 @@
 import type ITask from "./ITask";
 
 export default class ConfirmableTask implements ITask {
+    id = crypto.randomUUID();
     action: string;
 
     constructor(action: string) {
