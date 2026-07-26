@@ -1,7 +1,7 @@
 <script lang="ts">
 
     import { onMount } from "svelte";
-	import ThemeController from "./ThemeController";
+	import ThemeController from "./ThemeController.svelte";
 
     onMount(() => {
         ThemeController.getInstance();

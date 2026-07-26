@@ -1,26 +1,37 @@
 export class Mockable {
   #mock: boolean;
+  #prefix = "mock_";
  
   constructor(mock = false) {
     this.#mock = mock;
  
-    return new Proxy(this, {
+    return new Proxy(this, {      
       get: (target, prop: string, receiver) => {
         const value = Reflect.get(target, prop, receiver);
+
+        const isOwnDomainMethod = (target: object, prop: string) => {
+          let proto = Object.getPrototypeOf(target);
+          while (proto && proto !== Mockable.prototype) {
+            if (Object.prototype.hasOwnProperty.call(proto, prop)) return true;
+            proto = Object.getPrototypeOf(proto);
+          }
+          return false;
+        };
  
         // Only intercept callable, non-internal, non-mock_ members
         if (
           typeof value !== "function" ||
-          prop.startsWith("mock_") ||
+          prop.startsWith(this.#prefix) ||
           prop.startsWith("#") ||
-          prop === "constructor"
+          prop === "constructor" ||
+          !isOwnDomainMethod(target, prop)
         ) {
-          return value;
+          return typeof value === "function" ? value.bind(target) : value;
         }
  
         return (...args: unknown[]) => {
           if (target.#mock) {
-            const mockFn = (target as Record<string, unknown>)[`mock_${prop}`];
+            const mockFn = (target as Record<string, unknown>)[`${this.#prefix}${prop}`];
             if (typeof mockFn === "function") {
               return (mockFn as (...a: unknown[]) => unknown).apply(
                 target,
@@ -30,7 +41,7 @@ export class Mockable {
             // No mock twin found — fall through to real, warn in dev
             if (import.meta.env?.DEV) {
               console.warn(
-                `[Mockable] mock_${prop} not found on ${target.constructor.name}. Falling back to real implementation.`
+                `[Mockable] ${this.#prefix}${prop} not found on ${target.constructor.name}. Falling back to real implementation.`
               );
             }
           }
@@ -50,5 +61,9 @@ export class Mockable {
 
   unmock() {
     this.#mock = false;
+  }
+
+  setMockPrefix(prefix: string) {
+    this.#prefix = prefix;
   }
 }
