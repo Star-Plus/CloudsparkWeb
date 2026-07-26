@@ -1,5 +1,4 @@
 <script lang="ts">
-	import favicon from '$lib/assets/favicon.svg';
 	import HeaderBar from '../../lib/components/HeaderBar.svelte';
 	import { page } from '$app/stores';
 	import navbarExeluded from '../../global/NonNavbarPages';
@@ -35,7 +34,6 @@
 
 </script>
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
 <ThemeContext />
 
