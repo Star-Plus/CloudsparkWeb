@@ -27,10 +27,10 @@
 <nav class="flex items-center justify-between">
     
     <div class="flex items-center gap-3">
-        <a class="bg-background-950 rounded-circle p-1" href="/">
-            <img src="/Icon.png" alt="Euler Logo" class="size-7 dark:invert" />
+        <a href="/">
+            <img src="/Icon.png" alt="Euler Logo" class="w-7" />
         </a>
-        <p class="font-bold">Euler</p>
+        <p >Euler</p>
     </div>
 
     <div class="h-full flex items-center gap-1">

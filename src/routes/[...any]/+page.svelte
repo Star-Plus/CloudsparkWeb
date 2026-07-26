@@ -1,5 +1,11 @@
 <script>
+	import { goto } from "$app/navigation";
 	import ProtectedRoute from "$lib/features/auth/ProtectedRoute.svelte";
+	import { onMount } from "svelte";
+
+    onMount(() => {
+        goto("/drive/");
+    })
 
 </script>
 
