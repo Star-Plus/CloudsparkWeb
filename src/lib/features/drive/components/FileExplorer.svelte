@@ -72,7 +72,7 @@
     {#if root.payload}
 
         <div class="flex items-center mb-4">
-            {#if root.payload.path?.split('/').length >= 2}
+            {#if subPathQuery?.split('/').filter(e => e !== "").length >= 2}
                 <button
                     onclick={handleGoBack}
                     class="flex items-center justify-center rounded hover:bg-muted mr-1"
