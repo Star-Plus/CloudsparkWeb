@@ -1,3 +1,4 @@
+import type AuthService from "$lib/features/auth/AuthService";
 import BoxTask from "$lib/features/tasks/BoxTask.svelte";
 import ConfirmableTask from "$lib/features/tasks/ConfirmableTask.svelte";
 import ProgressingTask from "$lib/features/tasks/ProgressingTask.svelte";
@@ -9,12 +10,14 @@ import type { AxiosInstance } from "axios"
 export default class UploadAgent extends Mockable {
     
     private api: AxiosInstance;
+    private authService: AuthService;
     private socketBaseUrl?: string;
     private vcsUrl?: string;
 
-    constructor(api: AxiosInstance, socketUrl?: string, vcsUrl?: string) {
+    constructor(api: AxiosInstance, authService: AuthService, socketUrl?: string, vcsUrl?: string) {
         super();
         this.api = api;
+        this.authService = authService;
         this.socketBaseUrl = socketUrl;
         this.vcsUrl = vcsUrl;
     }
@@ -38,6 +41,8 @@ export default class UploadAgent extends Mockable {
             const repoPath = dest.split("/").slice(0, 2).join("/");
             
             const remoteUrl = this.vcsUrl + "/api/" + repoPath;
+
+            await this.login();
             await this.createRepository(repoPath, remoteUrl);
 
             const relativePath = dest.split("/").slice(2).filter(p => p !== "").join("/");
@@ -146,12 +151,22 @@ export default class UploadAgent extends Mockable {
         })
     }
 
+    private login() {
+        if (!this.authService.isAuthenticated()) throw new Error("Not logged in");
+        const user = this.authService.getUser();
+
+        return this.api.post("/login", null, {
+            params: { username: user?.username, token: user?.token}
+        });
+    }
+
     private async createRepository(repoPath: string, remoteUrl: string) {
         const resp = await this.api.post(`/initialize/repository/${repoPath}`, null, {
             params: { remote: remoteUrl }
         });
         if (resp.status !== 200) throw new Error(resp.data);
     }
+
 
     private async ghostStage(repoPath: string, filepath: string, ghostName: string) {
         const resp = await this.api.post(`/${repoPath}/ghostStage`, null, {
