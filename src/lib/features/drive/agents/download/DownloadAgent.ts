@@ -148,7 +148,7 @@ export default class DownloadAgent {
         if (!this.authService.isAuthenticated()) throw new Error("Not logged in");
         const user = this.authService.getUser();
 
-        return this.api.post("/login", null, {
+        return this.api.get("/login", {
             params: { username: user?.username, token: user?.token}
         });
     }

@@ -55,7 +55,7 @@
                 <img
                     src="/Icon.png"
                     alt="CloudSpark logo"
-                    class={`relative size-24 object-contain select-none transition-transform duration-700 group-hover:scale-110 ${isDark ? '' : 'invert'}`}
+                    class={`relative size-24 object-contain select-none transition-transform duration-700 group-hover:scale-110`}
                 
                 />
             </div>
