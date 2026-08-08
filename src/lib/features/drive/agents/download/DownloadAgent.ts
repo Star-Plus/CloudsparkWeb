@@ -92,7 +92,8 @@ export default class DownloadAgent {
                         case "task": {
                             switch (data.taskType) {
                                 case "progressing": {
-                                    boxTask.addSubtask(new ProgressingTask(data.action, data.total));
+                                    const total = data.params?.total || 0;
+                                    boxTask.addSubtask(new ProgressingTask(data.action, total));
                                     break;
                                 }
                                 case "confirmation": {
@@ -148,7 +149,7 @@ export default class DownloadAgent {
         if (!this.authService.isAuthenticated()) throw new Error("Not logged in");
         const user = this.authService.getUser();
 
-        return this.api.get("/login", {
+        return this.api.post("/login", null, {
             params: { username: user?.username, token: user?.token}
         });
     }

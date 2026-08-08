@@ -25,6 +25,10 @@
     let max = $derived(flatTasks.reduce((sum, t) => sum + t.total, 0));
     let percent = $derived(max > 0 ? Math.round((done / max) * 100) : 0);
     let activeCount = $derived(flatTasks.filter((t) => t.progress < t.total).length);
+
+    $effect(() => {
+        console.log("Flat tasks:", flatTasks);
+    })
 </script>
 
 {#if flatTasks.length > 0}
