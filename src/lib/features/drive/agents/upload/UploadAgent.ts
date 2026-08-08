@@ -85,7 +85,6 @@ export default class UploadAgent extends Mockable {
             socket.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
-                    console.log("Push progress:", data);
 
                     switch (data.type) {
                         case "connected": {

@@ -79,7 +79,6 @@ export default class DownloadAgent {
             socket.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
-                    console.log("Pull progress:", data);
 
                     switch (data.type) {
                         case "connected": {
