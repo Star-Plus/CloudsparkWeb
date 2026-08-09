@@ -79,7 +79,6 @@ export default class DownloadAgent {
             socket.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
-                    console.log("Pull progress:", data);
 
                     switch (data.type) {
                         case "connected": {
@@ -92,7 +91,8 @@ export default class DownloadAgent {
                         case "task": {
                             switch (data.taskType) {
                                 case "progressing": {
-                                    boxTask.addSubtask(new ProgressingTask(data.action, data.total));
+                                    const total = data.params?.total || 0;
+                                    boxTask.addSubtask(new ProgressingTask(data.action, total));
                                     break;
                                 }
                                 case "confirmation": {

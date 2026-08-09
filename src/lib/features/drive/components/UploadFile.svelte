@@ -3,8 +3,12 @@
     import axios from "axios";
     import { page } from "$app/state";
 	import ErrorStore from "$lib/features/errors/ErrorStore.svelte";
+    import { getAuthContext } from "$lib/features/auth/AuthContext.svelte";
 
-    const agent = new UploadAgent(axios.create({baseURL: "http://localhost:3848"}), 
+    const authService = getAuthContext().service;
+
+    const agent = new UploadAgent(axios.create({baseURL: "http://localhost:3848"}),
+        authService,
         "ws://localhost:3849",
         import.meta.env.VITE_VCS_API_URL
     );

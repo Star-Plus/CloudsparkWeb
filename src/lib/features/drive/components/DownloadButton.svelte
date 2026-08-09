@@ -1,12 +1,16 @@
 <script lang="ts">
+	import { getAuthContext } from "$lib/features/auth/AuthContext.svelte";
 	import DownloadAgent from "../agents/download/DownloadAgent";
 	import axios from "axios";
 
     let {objectPath} : {objectPath: string} = $props();
 
+    const authService = getAuthContext().service;
+
     async function handleOnClick() {
         const agent = new DownloadAgent(
             axios.create({baseURL: "http://localhost:3848"}), 
+            authService,
             "ws://localhost:3849", 
             import.meta.env.VITE_VCS_API_URL,
         );

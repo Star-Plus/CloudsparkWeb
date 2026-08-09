@@ -155,7 +155,7 @@
     {/if}
 
     {#if fileToPreview}
-    <div class="absolute w-full h-full bg-neutral-950/70 top-0 left-0 p-30 overflow-y-auto">
+    <div class="absolute w-full h-full bg-neutral-950/70 top-0 left-0 p-30 overflow-y-auto z-100">
         <UvPreviewer 
             apiSource={vcsApi} 
             assetPath={fileToPreview} 

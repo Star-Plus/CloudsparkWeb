@@ -44,7 +44,7 @@
         })
 
         window.addEventListener("mousedown", (e: MouseEvent) => {
-            if (!container.contains(e.target as Node)) {
+            if (container && !container.contains(e.target as Node)) {
                 onClickOutside();
             }
         })

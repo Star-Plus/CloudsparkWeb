@@ -56,8 +56,8 @@ export default class UploadAgent extends Mockable {
             await this.push(repoPath, relativePath);
             socket?.close();
 
-            await this.wash(repoPath);
-            await this.prepareAsset(repoPath, src, relativePath);
+            // await this.wash(repoPath);
+            // await this.prepareAsset(repoPath, src, relativePath);
         }
         catch (err: any) {
             logger.error(err.message);
@@ -85,7 +85,6 @@ export default class UploadAgent extends Mockable {
             socket.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
-                    console.log("Push progress:", data);
 
                     switch (data.type) {
                         case "connected": {
@@ -98,7 +97,8 @@ export default class UploadAgent extends Mockable {
                         case "task": {
                             switch (data.taskType) {
                                 case "progressing": {
-                                    boxTask.addSubtask(new ProgressingTask(data.action, data.total));
+                                    const total = data.params?.total || 0;
+                                    boxTask.addSubtask(new ProgressingTask(data.action, total));
                                     break;
                                 }
                                 case "confirmation": {
@@ -121,7 +121,7 @@ export default class UploadAgent extends Mockable {
                                 task.progress = data.current;
                             }
                             else {
-                                console.error("Unknown task:", task);
+                                console.error("Unknown action:", task);
                             }
                             break;
                         }
