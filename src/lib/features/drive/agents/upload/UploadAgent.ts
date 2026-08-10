@@ -56,8 +56,8 @@ export default class UploadAgent extends Mockable {
             await this.push(repoPath, relativePath);
             socket?.close();
 
-            // await this.wash(repoPath);
-            // await this.prepareAsset(repoPath, src, relativePath);
+            await this.wash(repoPath);
+            await this.prepareAsset(repoPath, src, relativePath);
         }
         catch (err: any) {
             logger.error(err.message);
