@@ -37,7 +37,7 @@
 </script>
 
 <svelte:head>
-    <title>CloudsPark - Login</title>
+    <title>Euler - Login</title>
 </svelte:head>
 
 <div class="login-wrapper font-primary overflow-hidden">
@@ -54,13 +54,13 @@
             <div class="relative">
                 <img
                     src="/Icon.png"
-                    alt="CloudSpark logo"
+                    alt="Euler logo"
                     class={`relative size-24 object-contain select-none transition-transform duration-700 group-hover:scale-110`}
                 
                 />
             </div>
             <h1 class="font-bold text-4xl select-none tracking-tight bg-clip-text text-transparent bg-linear-to-b from-text-900 to-text-700">
-                Cloudspark
+                Euler
             </h1>
         </div>
 
