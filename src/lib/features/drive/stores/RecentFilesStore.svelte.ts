@@ -18,7 +18,8 @@ export default class RecentFilesStore {
     public recentFiles = $state<DirObject[]>([])
 
     public add(file: DirObject) {
-        if (file.path.split("/").length < 3) return;
+        if (!file) throw new Error("File is required");
+        if (!file.path || file.path.split("/").length < 3) return;
 
         console.log(file)
 

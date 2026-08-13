@@ -3,6 +3,7 @@
 	import { goto } from "$app/navigation";
 	import ThemeController from "$lib/controllers/theme/ThemeController.svelte";
 	import { getAuthContext } from "$lib/features/auth/AuthContext.svelte";
+    import {recording, startRecording} from "$lib/utils/observe/replaySessions.svelte";
 
     let themeController = $state<ThemeController | null>(null);
 
@@ -49,6 +50,17 @@
             {:else} 
             <span class="material-symbols-rounded">
                 dark_mode
+            </span>
+            {/if}
+        </button>
+
+        <button class="side-button flex items-center gap-1" onclick={() => startRecording()} style={recording.isRecording ? "background-color: var(--color-accent-300)" : ""}>
+            {#if recording.isRecording}
+            Currently Recording
+            {:else}
+            Record Replay
+            <span class="material-symbols-rounded">
+                radio_button_checked
             </span>
             {/if}
         </button>
