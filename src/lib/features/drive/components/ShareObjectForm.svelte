@@ -18,7 +18,7 @@
     let shareRequestPayload = $state<ShareVaultObjectPayload>({
         objectPath: "",
         shareWith: "",
-        permissionRoles: {
+        permissions: {
             canShare: false,
             canWrite: false,
             canRead: false,
@@ -57,7 +57,7 @@
         shareRequestPayload = {
             objectPath: objectPath,
             shareWith: "",
-            permissionRoles: {
+            permissions: {
                 canShare: false,
                 canWrite: false,
                 canRead: true,
@@ -70,13 +70,13 @@
     $effect(() => {
         validator.feed("shareWith", shareRequestPayload!.shareWith);
         validator.feed("objectPath", shareRequestPayload!.objectPath);
-        validator.feed("permissionRoles", shareRequestPayload!.permissionRoles);
+        validator.feed("permissionRoles", shareRequestPayload!.permissions);
     })
 
     $effect(() => {
         switch (permissionRoleSelection) {
             case "share":
-                shareRequestPayload!.permissionRoles = {
+                shareRequestPayload!.permissions = {
                     canShare: true,
                     canWrite: false,
                     canRead: false,
@@ -84,7 +84,7 @@
                 };
                 break;
             case "write":
-                shareRequestPayload!.permissionRoles = {
+                shareRequestPayload!.permissions = {
                     canShare: false,
                     canWrite: true,
                     canRead: false,
@@ -92,7 +92,7 @@
                 };
                 break;
             case "preview":
-                shareRequestPayload!.permissionRoles = {
+                shareRequestPayload!.permissions = {
                     canShare: false,
                     canWrite: false,
                     canRead: false,
@@ -100,7 +100,7 @@
                 };
                 break;
             default:
-                shareRequestPayload!.permissionRoles = {
+                shareRequestPayload!.permissions = {
                     canShare: false,
                     canWrite: false,
                     canRead: true,

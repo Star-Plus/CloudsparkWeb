@@ -3,7 +3,7 @@ import BaseDTO from "$lib/utils/models/BaseDTO.svelte";
 export type ShareVaultObjectPayload = {
     objectPath: string;
     shareWith: string;
-    permissionRoles: {
+    permissions: {
         canShare: boolean;
         canWrite: boolean;
         canRead: boolean;
