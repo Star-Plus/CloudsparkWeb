@@ -70,7 +70,7 @@
     $effect(() => {
         validator.feed("shareWith", shareRequestPayload!.shareWith);
         validator.feed("objectPath", shareRequestPayload!.objectPath);
-        validator.feed("permissionRoles", shareRequestPayload!.permissions);
+        validator.feed("permissions", shareRequestPayload!.permissions);
     })
 
     $effect(() => {
