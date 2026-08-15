@@ -7,7 +7,7 @@ export default class ShareVaultObjectValidator extends DataValidator {
                 return this.reviewShareWith(value);
             case "objectPath":
                 return this.reviewObjectPath(value);
-            case "permissionRoles":
+            case "permissions":
                 return this.reviewPermissionRoles(value);
         }
 
