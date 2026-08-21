@@ -141,7 +141,7 @@
 
                     <div class="w-40 px-3 shrink-0">
                         <div class="flex gap-2 justify-end items-center opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
-                            <ShareButton objectPath={`${child.name}`} />
+                            <ShareButton objectPath={`${child.path}`} />
                             <DownloadButton objectPath={`${child.path}`} />
                             <button class="p-1 rounded hover:bg-muted" aria-label="More options">
                                 <Icon icon="material-symbols:more-horiz" class="text-lg text-text-950/60" />
